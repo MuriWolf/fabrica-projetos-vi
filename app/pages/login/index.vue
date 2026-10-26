@@ -119,6 +119,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  public: true 
+})
+
 const { login, isLoading } = useAuthMock();
 
 const email = ref("");
