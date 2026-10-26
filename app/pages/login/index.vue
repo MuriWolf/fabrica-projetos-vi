@@ -92,7 +92,7 @@
           :loading="isLoading"
           :disabled="!isFormValid || isLoading"
           @click="handleLogin"
-          class="font-semibold"
+          class="font-semibold cursor-pointer"
         >
           <span v-if="isLoading" class="flex items-center gap-2">
             <UIcon name="i-heroicons-arrow-path-solid" class="animate-spin" />
