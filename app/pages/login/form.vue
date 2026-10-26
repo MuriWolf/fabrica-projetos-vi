@@ -17,7 +17,7 @@
         <div class="flex flex-col items-center gap-3">
           <!-- Logo / Ícone -->
           <div
-            class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg"
+            class="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg"
           >
             <UIcon
               name="i-heroicons-lock-closed-solid"
