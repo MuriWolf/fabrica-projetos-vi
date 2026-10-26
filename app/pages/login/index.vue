@@ -92,13 +92,9 @@
           :loading="isLoading"
           :disabled="!isFormValid || isLoading"
           @click="handleLogin"
-          class="font-semibold"
+          class="font-semibold cursor-pointer"
         >
-          <span v-if="isLoading" class="flex items-center gap-2">
-            <UIcon name="i-heroicons-arrow-path-solid" class="animate-spin" />
-            Entrando...
-          </span>
-          <span v-else class="flex items-center justify-center gap-2">
+          <span >
             <UIcon name="i-heroicons-arrow-right-circle-solid" />
             Entrar
           </span>
