@@ -124,6 +124,8 @@ definePageMeta({
 })
 
 const { login, isLoading } = useAuthMock();
+const route = useRoute()
+const router = useRouter()
 
 const email = ref("");
 const password = ref("");
@@ -135,13 +137,17 @@ const isFormValid = computed(() => {
   return email.value.trim().length > 0 && password.value.length > 0;
 });
 
+const redirectTo = computed(() => {
+  const redirect = route.query.redirect as string
+  return redirect || '/'
+})
+
 async function handleLogin() {
   try {
     error.value = "";
     await login(email.value, password.value);
 
-    // Redireciona pra home
-    navigateTo("/", { replace: true });
+    await router.push(redirectTo.value)
   } catch (err: any) {
     error.value = err.message || "E-mail ou senha inválidos";
   }

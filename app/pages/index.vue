@@ -3,8 +3,9 @@
 </template>
 
 <script setup lang=ts>
+
 definePageMeta({
-  layout: 'protected'
+  layout: 'protected' 
 })
 
 </script>
