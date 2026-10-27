@@ -1,0 +1,54 @@
+{
+  "alerts": [
+    {
+      "id": "alert-001",
+      "batchId": "batch-005",
+      "medicineId": "5",
+      "medicineName": "Omeprazol 20mg",
+      "lotNumber": "LOT2025E005",
+      "healthUnitId": "3",
+      "quantity": 200,
+      "expiryDate": "2026-11-15",
+      "daysUntilExpiry": 19,
+      "priority": "medium",
+      "createdAt": "2026-09-26T11:00:00Z"
+    },
+    {
+      "id": "alert-002",
+      "batchId": "batch-009",
+      "medicineId": "1",
+      "medicineName": "Paracetamol 500mg",
+      "lotNumber": "LOT2025I009",
+      "healthUnitId": "3",
+      "quantity": 600,
+      "expiryDate": "2026-10-01",
+      "daysUntilExpiry": 4,
+      "priority": "high",
+      "createdAt": "2026-09-26T17:00:00Z"
+    },
+    {
+      "id": "alert-003",
+      "batchId": "batch-003",
+      "medicineId": "3",
+      "medicineName": "Amoxicilina 250mg",
+      "lotNumber": "LOT2025C003",
+      "healthUnitId": "2",
+      "quantity": 100,
+      "expiryDate": "2027-06-10",
+      "daysUntilExpiry": 256,
+      "priority": "low",
+      "createdAt": "2026-09-25T16:20:00Z"
+    }
+  ],
+  "priorities": ["low", "medium", "high"],
+  "priorityLabels": {
+    "low": "Baixa",
+    "medium": "Média",
+    "high": "Alta"
+  },
+  "priorityColors": {
+    "low": "blue",
+    "medium": "yellow",
+    "high": "red"
+  }
+}

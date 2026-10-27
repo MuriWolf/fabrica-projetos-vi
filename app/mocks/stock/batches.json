@@ -1,0 +1,152 @@
+{
+  "batches": [
+    {
+      "id": "batch-001",
+      "medicineId": "1",
+      "medicineName": "Paracetamol 500mg",
+      "healthUnitId": "1",
+      "quantity": 1000,
+      "manufactureDate": "2026-01-15",
+      "expiryDate": "2028-01-15",
+      "lotNumber": "LOT2026A001",
+      "status": "available",
+      "createdAt": "2026-02-01T10:00:00Z",
+      "updatedAt": "2026-09-20T14:30:00Z"
+    },
+    {
+      "id": "batch-002",
+      "medicineId": "2",
+      "medicineName": "Ibuprofeno 600mg",
+      "healthUnitId": "1",
+      "quantity": 500,
+      "manufactureDate": "2026-03-20",
+      "expiryDate": "2028-03-20",
+      "lotNumber": "LOT2026B002",
+      "status": "available",
+      "createdAt": "2026-04-05T11:30:00Z",
+      "updatedAt": "2026-09-18T09:15:00Z"
+    },
+    {
+      "id": "batch-003",
+      "medicineId": "3",
+      "medicineName": "Amoxicilina 250mg",
+      "healthUnitId": "2",
+      "quantity": 300,
+      "manufactureDate": "2025-06-10",
+      "expiryDate": "2027-06-10",
+      "lotNumber": "LOT2025C003",
+      "status": "low_stock",
+      "createdAt": "2025-07-01T08:45:00Z",
+      "updatedAt": "2026-09-25T16:20:00Z"
+    },
+    {
+      "id": "batch-004",
+      "medicineId": "4",
+      "medicineName": "Losartana Potássica 50mg",
+      "healthUnitId": "1",
+      "quantity": 800,
+      "manufactureDate": "2026-05-01",
+      "expiryDate": "2028-05-01",
+      "lotNumber": "LOT2026D004",
+      "status": "available",
+      "createdAt": "2026-05-15T13:00:00Z",
+      "updatedAt": "2026-09-22T10:45:00Z"
+    },
+    {
+      "id": "batch-005",
+      "medicineId": "5",
+      "medicineName": "Omeprazol 20mg",
+      "healthUnitId": "3",
+      "quantity": 200,
+      "manufactureDate": "2025-11-15",
+      "expiryDate": "2026-11-15",
+      "lotNumber": "LOT2025E005",
+      "status": "expiring_soon",
+      "createdAt": "2025-12-01T09:30:00Z",
+      "updatedAt": "2026-09-26T11:00:00Z"
+    },
+    {
+      "id": "batch-006",
+      "medicineId": "6",
+      "medicineName": "Dipirona Sódica 500mg",
+      "healthUnitId": "2",
+      "quantity": 1500,
+      "manufactureDate": "2026-07-10",
+      "expiryDate": "2028-07-10",
+      "lotNumber": "LOT2026F006",
+      "status": "available",
+      "createdAt": "2026-07-20T14:15:00Z",
+      "updatedAt": "2026-09-24T08:30:00Z"
+    },
+    {
+      "id": "batch-007",
+      "medicineId": "7",
+      "medicineName": "Captopril 25mg",
+      "healthUnitId": "1",
+      "quantity": 50,
+      "manufactureDate": "2025-04-01",
+      "expiryDate": "2027-04-01",
+      "lotNumber": "LOT2025G007",
+      "status": "low_stock",
+      "createdAt": "2025-04-15T10:00:00Z",
+      "updatedAt": "2026-09-26T15:45:00Z"
+    },
+    {
+      "id": "batch-008",
+      "medicineId": "8",
+      "medicineName": "Metformina 850mg",
+      "healthUnitId": "3",
+      "quantity": 400,
+      "manufactureDate": "2026-08-01",
+      "expiryDate": "2028-08-01",
+      "lotNumber": "LOT2026H008",
+      "status": "available",
+      "createdAt": "2026-08-10T11:30:00Z",
+      "updatedAt": "2026-09-23T13:20:00Z"
+    },
+    {
+      "id": "batch-009",
+      "medicineId": "1",
+      "medicineName": "Paracetamol 500mg",
+      "healthUnitId": "3",
+      "quantity": 600,
+      "manufactureDate": "2025-10-01",
+      "expiryDate": "2026-10-01",
+      "lotNumber": "LOT2025I009",
+      "status": "expiring_soon",
+      "createdAt": "2025-10-10T09:00:00Z",
+      "updatedAt": "2026-09-26T17:00:00Z"
+    },
+    {
+      "id": "batch-010",
+      "medicineId": "4",
+      "medicineName": "Losartana Potássica 50mg",
+      "healthUnitId": "2",
+      "quantity": 5,
+      "manufactureDate": "2025-02-15",
+      "expiryDate": "2027-02-15",
+      "lotNumber": "LOT2025J010",
+      "status": "critical",
+      "createdAt": "2025-03-01T08:00:00Z",
+      "updatedAt": "2026-09-26T18:30:00Z"
+    }
+  ],
+  "statuses": [
+    "available",
+    "low_stock",
+    "expiring_soon",
+    "critical"
+  ],
+  "statusLabels": {
+    "available": "Disponível",
+    "low_stock": "Estoque Baixo",
+    "expiring_soon": "Vencendo em Breve",
+    "critical": "Crítico"
+  },
+  "statusColors": {
+    "available": "green",
+    "low_stock": "orange",
+    "expiring_soon": "yellow",
+    "critical": "red"
+  }
+}

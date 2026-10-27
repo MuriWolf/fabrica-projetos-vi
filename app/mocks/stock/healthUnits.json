@@ -1,0 +1,37 @@
+{
+  "healthUnits": [
+    {
+      "id": "1",
+      "name": "Unidade Básica de Saúde Centro",
+      "address": "Rua das Flores, 123 - Centro",
+      "city": "Porto Alegre",
+      "state": "RS",
+      "phone": "(51) 3333-4444",
+      "capacity": 500,
+      "createdAt": "2026-08-01T08:00:00Z",
+      "updatedAt": "2026-08-01T08:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "UBS Jardim Europa",
+      "address": "Av. Brasil, 456 - Jardim Europa",
+      "city": "Porto Alegre",
+      "state": "RS",
+      "phone": "(51) 3333-5555",
+      "capacity": 300,
+      "createdAt": "2026-08-05T09:30:00Z",
+      "updatedAt": "2026-08-05T09:30:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Posto de Saúde Zona Norte",
+      "address": "Rua dos Andradas, 789 - Zona Norte",
+      "city": "Porto Alegre",
+      "state": "RS",
+      "phone": "(51) 3333-6666",
+      "capacity": 400,
+      "createdAt": "2026-08-10T14:00:00Z",
+      "updatedAt": "2026-08-10T14:00:00Z"
+    }
+  ]
+}
