@@ -4,19 +4,22 @@
       "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "email": "aluno@ages.edu.br",
       "password": "123456",
-      "name": "Aluno Teste"
+      "name": "Aluno Teste",
+      "role": "Regular"
     },
     {
       "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
       "email": "professor@ages.edu.br",
       "password": "abcd1234",
-      "name": "Professor Teste"
+      "name": "Professor Teste",
+      "role": "Regular"
     },
     {
       "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
       "email": "admin@example.com",
       "password": "admin",
-      "name": "Admin"
+      "name": "Admin",
+      "role": "Admin"
     }
   ],
   "nextId": 4
