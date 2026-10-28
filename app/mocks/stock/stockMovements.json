@@ -2,108 +2,76 @@
   "movements": [
     {
       "id": "mov-001",
+      "stockId": "stock-batch-001",
       "batchId": "batch-001",
       "medicineId": "1",
-      "medicineName": "Paracetamol 500mg",
-      "healthUnitId": "1",
-      "type": "in",
+      "type": "Entry",
       "quantity": 1000,
-      "reason": "Entrada de estoque",
-      "date": "2026-02-01T10:00:00Z",
-      "createdBy": "admin@example.com",
-      "createdAt": "2026-02-01T10:00:00Z"
+      "occurredAt": "2026-02-01T10:00:00Z"
     },
     {
       "id": "mov-002",
+      "stockId": "stock-batch-001",
       "batchId": "batch-001",
       "medicineId": "1",
-      "medicineName": "Paracetamol 500mg",
-      "healthUnitId": "1",
-      "type": "out",
+      "type": "Exit",
       "quantity": 150,
-      "reason": "Distribuição para paciente",
-      "date": "2026-09-20T14:30:00Z",
-      "createdBy": "aluno@ages.edu.br",
-      "createdAt": "2026-09-20T14:30:00Z"
+      "occurredAt": "2026-09-20T14:30:00Z"
     },
     {
       "id": "mov-003",
+      "stockId": "stock-batch-003",
       "batchId": "batch-003",
       "medicineId": "3",
-      "medicineName": "Amoxicilina 250mg",
-      "healthUnitId": "2",
-      "type": "in",
+      "type": "Entry",
       "quantity": 300,
-      "reason": "Entrada de estoque",
-      "date": "2025-07-01T08:45:00Z",
-      "createdBy": "admin@example.com",
-      "createdAt": "2025-07-01T08:45:00Z"
+      "occurredAt": "2025-07-01T08:45:00Z"
     },
     {
       "id": "mov-004",
+      "stockId": "stock-batch-003",
       "batchId": "batch-003",
       "medicineId": "3",
-      "medicineName": "Amoxicilina 250mg",
-      "healthUnitId": "2",
-      "type": "out",
+      "type": "Exit",
       "quantity": 200,
-      "reason": "Distribuição para paciente",
-      "date": "2026-09-25T16:20:00Z",
-      "createdBy": "aluno@ages.edu.br",
-      "createdAt": "2026-09-25T16:20:00Z"
+      "occurredAt": "2026-09-25T16:20:00Z"
     },
     {
       "id": "mov-005",
+      "stockId": "stock-batch-005",
       "batchId": "batch-005",
       "medicineId": "5",
-      "medicineName": "Omeprazol 20mg",
-      "healthUnitId": "3",
-      "type": "in",
+      "type": "Entry",
       "quantity": 200,
-      "reason": "Entrada de estoque",
-      "date": "2025-12-01T09:30:00Z",
-      "createdBy": "admin@example.com",
-      "createdAt": "2025-12-01T09:30:00Z"
+      "occurredAt": "2025-12-01T09:30:00Z"
     },
     {
       "id": "mov-006",
+      "stockId": "stock-batch-007",
       "batchId": "batch-007",
       "medicineId": "7",
-      "medicineName": "Captopril 25mg",
-      "healthUnitId": "1",
-      "type": "in",
+      "type": "Entry",
       "quantity": 50,
-      "reason": "Entrada de estoque",
-      "date": "2025-04-15T10:00:00Z",
-      "createdBy": "admin@example.com",
-      "createdAt": "2025-04-15T10:00:00Z"
+      "occurredAt": "2025-04-15T10:00:00Z"
     },
     {
       "id": "mov-007",
+      "stockId": "stock-batch-010",
       "batchId": "batch-010",
       "medicineId": "4",
-      "medicineName": "Losartana Potássica 50mg",
-      "healthUnitId": "2",
-      "type": "in",
+      "type": "Entry",
       "quantity": 100,
-      "reason": "Entrada de estoque",
-      "date": "2025-03-01T08:00:00Z",
-      "createdBy": "admin@example.com",
-      "createdAt": "2025-03-01T08:00:00Z"
+      "occurredAt": "2025-03-01T08:00:00Z"
     },
     {
       "id": "mov-008",
+      "stockId": "stock-batch-010",
       "batchId": "batch-010",
       "medicineId": "4",
-      "medicineName": "Losartana Potássica 50mg",
-      "healthUnitId": "2",
-      "type": "out",
+      "type": "Exit",
       "quantity": 95,
-      "reason": "Distribuição para paciente",
-      "date": "2026-09-26T18:30:00Z",
-      "createdBy": "aluno@ages.edu.br",
-      "createdAt": "2026-09-26T18:30:00Z"
+      "occurredAt": "2026-09-26T18:30:00Z"
     }
   ],
-  "types": ["in", "out", "adjustment", "expired"]
+  "types": ["Entry", "Exit"]
 }

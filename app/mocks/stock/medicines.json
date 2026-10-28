@@ -3,82 +3,16 @@
     {
       "id": "1",
       "name": "Paracetamol 500mg",
-      "description": "Analgésico e antipirético",
-      "category": "Analgésicos",
-      "unit": "comprimido",
       "activeIngredient": "Paracetamol",
-      "createdAt": "2026-09-15T10:30:00Z",
-      "updatedAt": "2026-09-15T10:30:00Z"
+      "dosage": "500mg",
+      "unit": "comprimido"
     },
     {
       "id": "2",
       "name": "Ibuprofeno 600mg",
-      "description": "Anti-inflamatório não esteroidal",
-      "category": "Anti-inflamatórios",
-      "unit": "comprimido",
       "activeIngredient": "Ibuprofeno",
-      "createdAt": "2026-09-16T14:20:00Z",
-      "updatedAt": "2026-09-16T14:20:00Z"
-    },
-    {
-      "id": "3",
-      "name": "Amoxicilina 250mg",
-      "description": "Antibiótico penicilina",
-      "category": "Antibióticos",
-      "unit": "cápsula",
-      "activeIngredient": "Amoxicilina",
-      "createdAt": "2026-09-17T09:15:00Z",
-      "updatedAt": "2026-09-17T09:15:00Z"
-    },
-    {
-      "id": "4",
-      "name": "Losartana Potássica 50mg",
-      "description": "Anti-hipertensivo",
-      "category": "Cardiovasculares",
-      "unit": "comprimido",
-      "activeIngredient": "Losartana Potássica",
-      "createdAt": "2026-09-18T11:45:00Z",
-      "updatedAt": "2026-09-18T11:45:00Z"
-    },
-    {
-      "id": "5",
-      "name": "Omeprazol 20mg",
-      "description": "Inibidor da bomba de prótons",
-      "category": "Gastrointestinais",
-      "unit": "cápsula",
-      "activeIngredient": "Omeprazol",
-      "createdAt": "2026-09-19T16:00:00Z",
-      "updatedAt": "2026-09-19T16:00:00Z"
-    },
-    {
-      "id": "6",
-      "name": "Dipirona Sódica 500mg",
-      "description": "Analgésico e antitérmico",
-      "category": "Analgésicos",
-      "unit": "comprimido",
-      "activeIngredient": "Dipirona Sódica",
-      "createdAt": "2026-09-20T08:30:00Z",
-      "updatedAt": "2026-09-20T08:30:00Z"
-    },
-    {
-      "id": "7",
-      "name": "Captopril 25mg",
-      "description": "Inibidor da ECA",
-      "category": "Cardiovasculares",
-      "unit": "comprimido",
-      "activeIngredient": "Captopril",
-      "createdAt": "2026-09-21T13:10:00Z",
-      "updatedAt": "2026-09-21T13:10:00Z"
-    },
-    {
-      "id": "8",
-      "name": "Metformina 850mg",
-      "description": "Antidiabético oral",
-      "category": "Antidiabéticos",
-      "unit": "comprimido",
-      "activeIngredient": "Metformina Cloridrato",
-      "createdAt": "2026-09-22T10:00:00Z",
-      "updatedAt": "2026-09-22T10:00:00Z"
+      "dosage": "600mg",
+      "unit": "comprimido"
     }
   ],
   "categories": [
