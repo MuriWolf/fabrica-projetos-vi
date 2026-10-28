@@ -6,7 +6,8 @@ interface User {
   id: string
   email: string
   password: string
-  name: string
+  name: string,
+  role: string
 }
 
 interface LoginResponse {
@@ -31,10 +32,11 @@ function generateFakeToken(email: string): string {
 
 export function useAuthMock() {
   const token = useState<string>('auth_token', () => '')
-  const user = useState<{ id: string; email: string; name: string } | null>('auth_user', () => null)
+  const user = useState<{ id: string; email: string; name: string, role: string } | null>('auth_user', () => null)
   const isLoading = ref(false);
 
   const isAuthenticated = computed(() => !!token.value)
+  const isAdmin = computed(() => user.value?.role === 'Admin')
 
   async function login(email: string, passowrd: string) {
     isLoading.value = true
@@ -60,7 +62,8 @@ export function useAuthMock() {
     user.value = {
       id: found.id,
       email: found.email,
-      name: found.name
+      name: found.name,
+      role: found.role
     }
 
     // Persiste no localStorage
@@ -112,6 +115,7 @@ export function useAuthMock() {
     token,
     user,
     isAuthenticated,
+    isAdmin,
     isLoading,
     login,
     logout,

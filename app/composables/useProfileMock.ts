@@ -35,7 +35,7 @@ export function useProfileMock() {
         name: auth.user.value.name,
         email: auth.user.value.email,
         phone: profile.value.phone || '(51) 99999-9999',
-        role: profile.value.role || 'Regular'
+        role: profile.value.role
       }
 
       return profile.value
@@ -121,13 +121,13 @@ export function useProfileMock() {
     // onMounted(loadProfile)
   }
 
-  const isAdmin = computed(() => profile.value.role === 'Admin')
+  console.log(profile.value);
+  
 
   return {
     profile,
     loading,
     error,
-    isAdmin,
     loadProfile,
     saveProfile,
     deleteProfile,
