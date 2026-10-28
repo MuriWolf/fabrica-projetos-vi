@@ -8,6 +8,15 @@
       "expirationDate": "2028-01-15",
       "quantity": 1000,
       "status": "available"
+    },
+    {
+      "id": "batch-002",
+      "medicineId": "2",
+      "batchNumber": "LOT2026A002",
+      "fabricationDate": "2026-01-12",
+      "expirationDate": "2028-01-10",
+      "quantity": 500,
+      "status": "available"
     }
   ],
   "statuses": [
