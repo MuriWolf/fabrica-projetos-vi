@@ -82,11 +82,13 @@ definePageMeta({
   layout: 'protected'
 })
 
+const authStore = useAuthMock();
 const toast = useToast()
 const profileStore = useProfileMock()
 const showDeleteModal = ref(false)
 
-const { profile, loading, error, loadProfile, saveProfile, deleteProfile, resetProfile, isAdmin } = profileStore
+const { profile, loading, error, loadProfile, saveProfile, deleteProfile, resetProfile } = profileStore
+const { isAdmin } = authStore
 
 // Carrega ao montar
 onMounted(async () => {
