@@ -1,75 +1,40 @@
-# Nuxt Minimal Starter
+# Fábrica de Projetos Ágeis VI — Frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 4 + Nuxt UI application for managing medicine stock.
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
+cp .env.example .env
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+The app runs on `http://localhost:3000`.
 
-Build the application for production:
+## Configuration
+
+| Variable | Default | Description |
+|---|---|---|
+| `NUXT_PUBLIC_API_BASE_URL` | `http://localhost:5080` | Base URL of the ASP.NET backend |
+| `NUXT_PUBLIC_USE_MOCKS` | `true` | Use the local JSON mocks instead of the API |
+
+While the backend is not ready, keep `NUXT_PUBLIC_USE_MOCKS=true`. When it is
+available, set it to `false` and start the backend on port `5080`.
+
+### Mock users
+
+| E-mail | Password | Role |
+|---|---|---|
+| `aluno@ages.edu.br` | `123456` | Regular |
+| `professor@ages.edu.br` | `abcd1234` | Regular |
+| `admin@example.com` | `admin` | Admin |
+
+## Scripts
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run dev        # development server
+npm run build      # production build
+npm run preview    # preview production build
+npm run typecheck  # TypeScript checks
 ```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
