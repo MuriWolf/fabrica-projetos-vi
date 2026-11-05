@@ -83,7 +83,6 @@
         :items="medicines.map(m => ({ label: m.name, value: m.id }))"
         placeholder="Filtrar por medicamento"
         class="flex-1"
-        searchable
       />
 
       <USelect
@@ -156,11 +155,11 @@
         Mostrando {{ pagination.from }} a {{ pagination.to }} de {{ filteredBatches.length }} lotes
       </p>
       <UPagination
-        v-model="pagination.page"
-        :page-count="pagination.pageCount"
+        v-model:page="pagination.page"
         :total="filteredBatches.length"
-        :siblings="1"
-        :markers="true"
+        :items-per-page="pagination.pageSize"
+        :sibling-count="1"
+        show-edges
       />
     </div>
   </UCard>
@@ -179,7 +178,7 @@
             :items="medicines.map(m => ({ label: m.name, value: m.id }))"
             placeholder="Selecione um medicamento"
             class="w-full"
-            :disabled="loading"
+            :disabled="saving"
           />
         </UFormField>
 
@@ -188,7 +187,7 @@
             v-model="formData.batchNumber"
             placeholder="LOT2026A001"
             class="w-full"
-            :disabled="loading"
+            :disabled="saving"
           />
         </UFormField>
 
@@ -197,7 +196,7 @@
             v-model="formData.fabricationDate"
             type="date"
             class="w-full"
-            :disabled="loading"
+            :disabled="saving"
           />
         </UFormField>
 
@@ -206,7 +205,7 @@
             v-model="formData.expirationDate"
             type="date"
             class="w-full"
-            :disabled="loading"
+            :disabled="saving"
           />
         </UFormField>
 
@@ -216,7 +215,7 @@
             type="number"
             placeholder="0"
             class="w-full"
-            :disabled="loading"
+            :disabled="saving"
           />
         </UFormField>
 
@@ -225,7 +224,7 @@
             color="neutral"
             variant="ghost"
             class="cursor-pointer"
-            :disabled="loading"
+            :disabled="saving"
             @click="closeModal"
           >
             Cancelar
@@ -234,7 +233,7 @@
             type="submit"
             color="primary"
             class="cursor-pointer"
-            :loading="loading"
+            :loading="saving"
           >
             {{ editingBatch ? 'Atualizar' : 'Criar' }}
           </UButton>
@@ -274,7 +273,7 @@
 </template>
 
 <script setup lang="ts">
-import { useStockMock } from '~/composables/useStockMock'
+import { useStock } from '~/composables/useStock'
 
 import type { TableColumn } from '@nuxt/ui'
 
@@ -286,6 +285,7 @@ interface BatchRow {
   batchNumber: string
   quantity: number
   status?: string
+  fabricationDate: string
   expirationDate: string
 }
 
@@ -315,6 +315,7 @@ const tableRows = computed<BatchRow[]>(() =>
       batchNumber: batch.batchNumber,
       quantity: batch.quantity ?? 0,
       status: batch.status,
+      fabricationDate: batch.fabricationDate,
       expirationDate: batch.expirationDate
     }
   })
@@ -325,9 +326,8 @@ definePageMeta({
 })
 
 const toast = useToast()
-const auth = useAuthMock()
-const profileStore = useProfileMock()
-const stock = useStockMock()
+const auth = useAuth()
+const stock = useStock()
 
 const { isAdmin } = auth
 
@@ -439,12 +439,12 @@ function getStatusLabel(status?: string) {
 
 function getColorFromStatus(status?: string) {
   const colors: Record<string, any> = {
-    available: 'green',
-    low_stock: 'orange',
-    expiring_soon: 'yellow',
+    available: 'success',
+    low_stock: 'warning',
+    expiring_soon: 'warning',
     critical: 'error'
   }
-  return colors[status || 'available'] || 'green'
+  return colors[status || 'available'] || 'success'
 }
 
 function isExpiringSoon(expirationDate: string) {

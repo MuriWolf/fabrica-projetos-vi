@@ -1,5 +1,5 @@
 <template>
-  <app-sidebar>
+  <AppSidebar>
     <div class="flex-1 p-4">
       <div class="max-w-7xl mx-auto">
         <!-- Card que envolve TODO o conteúdo -->
@@ -10,14 +10,5 @@
         </UCard>
       </div>
     </div>
-  </app-sidebar>
+  </AppSidebar>
 </template>
-
-<script setup lang="ts">
-import AppSidebar from "~/components/AppSidebar.vue";
-import authGlobal from "~/middleware/auth.global";
-
-definePageMeta({
-  middleware: authGlobal,
-});
-</script>

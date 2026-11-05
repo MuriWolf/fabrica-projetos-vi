@@ -5,11 +5,9 @@
     <UCard
       class="w-full max-w-md shadow-xl border-0"
       :ui="{
-        base: 'bg-white/80 backdrop-blur-sm',
-        ring: 'ring-2 ring-purple-100',
-        divide: 'divide-y divide-gray-100',
-        body: { base: 'p-6' },
-        footer: { base: 'pt-4' },
+        root: 'bg-white/80 backdrop-blur-sm ring-2 ring-purple-100',
+        body: 'p-6',
+        footer: 'pt-4',
       }"
     >
       <!-- Header -->
@@ -33,9 +31,9 @@
       </template>
 
       <!-- Formulário -->
-      <UForm class="flex flex-col gap-4">
+      <UForm class="flex flex-col gap-4" @submit="handleLogin">
         <!-- E-mail -->
-        <UFormGroup label="E-mail" name="email" class="w-full">
+        <UFormField label="E-mail" name="email" class="w-full">
           <UInput
             v-model="email"
             type="email"
@@ -44,12 +42,12 @@
             autocomplete="email"
             :ui="{ base: 'rounded-lg' }"
             class="w-full"
-            @keyup.enter="handleLogin"
+            required
           />
-        </UFormGroup>
+        </UFormField>
 
         <!-- Senha -->
-        <UFormGroup label="Senha" name="password">
+        <UFormField label="Senha" name="password">
           <UInput
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
@@ -58,10 +56,11 @@
             autocomplete="current-password"
             class="w-full"
             :ui="{ base: 'rounded-lg' }"
+            required
           >
             <template #trailing>
               <UButton
-                color="gray"
+                color="neutral"
                 variant="ghost"
                 :icon="
                   showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'
@@ -72,17 +71,15 @@
               />
             </template>
           </UInput>
-        </UFormGroup>
+        </UFormField>
 
-        <UToken
+        <UAlert
           v-if="error"
-          variant="solid"
-          color="red"
-          class="text-sm"
-          :ui="{ base: 'py-2 px-3' }"
-        >
-          {{ error }}
-        </UToken>
+          color="error"
+          variant="soft"
+          icon="i-lucide-alert-circle"
+          :title="error"
+        />
 
         <UButton
           type="submit"
@@ -91,10 +88,9 @@
           color="primary"
           :loading="isLoading"
           :disabled="!isFormValid || isLoading"
-          @click="handleLogin"
           class="font-semibold cursor-pointer"
         >
-          <span >
+          <span class="flex items-center justify-center gap-2">
             <UIcon name="i-heroicons-arrow-right-circle-solid" />
             Entrar
           </span>
@@ -104,34 +100,30 @@
       <!-- Footer -->
       <template #footer>
         <div class="text-center text-sm text-gray-500 space-y-2">
-          <!-- Créditos / Info do backend -->
           <p>Sistema de Gestão de Medicamentos</p>
-
         </div>
       </template>
     </UCard>
-
   </div>
 </template>
 
 <script setup lang="ts">
 definePageMeta({
-  public: true 
+  public: true
 })
 
-const { login, isLoading } = useAuthMock();
+const { login, isLoading } = useAuth()
 const route = useRoute()
 const router = useRouter()
 
-const email = ref("");
-const password = ref("");
-const error = ref("");
-const showPassword = ref(false);
+const email = ref('')
+const password = ref('')
+const error = ref('')
+const showPassword = ref(false)
 
-// Validação simples
 const isFormValid = computed(() => {
-  return email.value.trim().length > 0 && password.value.length > 0;
-});
+  return email.value.trim().length > 0 && password.value.length > 0
+})
 
 const redirectTo = computed(() => {
   const redirect = route.query.redirect as string
@@ -139,23 +131,18 @@ const redirectTo = computed(() => {
 })
 
 async function handleLogin() {
-  try {
-    error.value = "";
-    await login(email.value, password.value);
+  error.value = ''
 
+  if (!isFormValid.value) {
+    error.value = 'Preencha o e-mail e a senha.'
+    return
+  }
+
+  try {
+    await login(email.value, password.value)
     await router.push(redirectTo.value)
   } catch (err: any) {
-    error.value = err.message || "E-mail ou senha inválidos";
+    error.value = err.message || 'E-mail ou senha inválidos'
   }
 }
-
-// Pre-fill com usuário de exemplo (opcional, para facilitar testes)
-onMounted(() => {
-  email.value = "aluno@ages.edu.br";
-  password.value = "123456";
-});
 </script>
-
-<style lang="css" scoped>
-
-</style>

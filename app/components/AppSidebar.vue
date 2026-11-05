@@ -10,16 +10,16 @@
           <div
             class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center"
           >
-            <UIcon name="i-heroicons-pills" class="w-5 h-5 text-white" />
+            <UIcon name="i-heroicons-beaker" class="w-5 h-5 text-white" />
           </div>
           <span class="font-bold text-gray-900">Gestor de Medicamentos</span>
         </div>
 
         <!-- Menu Toggle -->
         <UButton
-          color="gray"
+          color="neutral"
           variant="ghost"
-          :icon="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-menu'"
+          :icon="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-bars-3'"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
         />
       </div>
@@ -61,7 +61,7 @@
 
           <!-- User Menu -->
           <div class="border-t border-gray-100 mt-2 pt-2 pb-2">
-            <UDivider label="Usuário" class="text-xs text-gray-400" />
+            <USeparator label="Usuário" class="text-xs text-gray-400" />
 
             <div class="px-3 py-2">
               <div class="flex items-center gap-3 mb-3">
@@ -84,7 +84,7 @@
 
               <!-- User Menu Items -->
               <div class="space-y-1">
-                <div v-for="item in userMenuItems" :key="item.label">
+                <template v-for="item in userMenuItems" :key="item.label">
                   <NuxtLink
                     v-if="!item.click"
                     :to="item.to"
@@ -97,9 +97,7 @@
                   </NuxtLink>
 
                   <button
-                    v-for="item in userMenuItems"
-                    :key="item.label"
-                    v-if="item.click"
+                    v-else
                     class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
                     @click="
                       () => {
@@ -111,7 +109,7 @@
                     <UIcon :name="item.icon" class="w-5 h-5" />
                     {{ item.label }}
                   </button>
-                </div>
+                </template>
               </div>
             </div>
           </div>
@@ -132,7 +130,7 @@
               <div
                 class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center shadow-lg"
               >
-                <UIcon name="i-heroicons-pills" class="w-6 h-6 text-white" />
+                <UIcon name="i-heroicons-beaker" class="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 class="font-bold text-gray-900">Gestor</h1>
@@ -165,7 +163,7 @@
           <!-- User Section -->
           <div class="p-3 border-t border-gray-100">
             <div class="mb-3">
-              <UDivider
+              <USeparator
                 label="USUÁRIO"
                 class="text-[10px] text-gray-400 uppercase tracking-wide"
               />
@@ -192,7 +190,7 @@
 
               <UButton
                 to="/profile"
-                color="secondary"
+                color="neutral"
                 variant="ghost"
                 size="xs"
                 icon="i-heroicons-user-circle"
@@ -228,7 +226,7 @@
 </template>
 
 <script setup lang="ts">
-const auth = useAuthMock();
+const auth = useAuth();
 const isMobileMenuOpen = ref(false);
 
 const currentPath = computed(() => useRoute().path);
