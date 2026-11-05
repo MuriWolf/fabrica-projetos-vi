@@ -6,5 +6,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ui: {
     colorMode: false
+  },
+  runtimeConfig: {
+    public: {
+      // Override with NUXT_PUBLIC_API_BASE_URL
+      apiBaseUrl: 'http://localhost:5080',
+      // Override with NUXT_PUBLIC_USE_MOCKS=false when the backend is ready
+      useMocks: true
+    }
   }
 })
