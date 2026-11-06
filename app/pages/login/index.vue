@@ -101,6 +101,15 @@
       <template #footer>
         <div class="text-center text-sm text-gray-500 space-y-2">
           <p>Sistema de Gestão de Medicamentos</p>
+          <p>
+            Não tem uma conta?
+            <NuxtLink
+              :to="registerLink"
+              class="text-primary-600 hover:underline font-medium"
+            >
+              Criar conta
+            </NuxtLink>
+          </p>
         </div>
       </template>
     </UCard>
@@ -129,6 +138,11 @@ const redirectTo = computed(() => {
   const redirect = route.query.redirect as string
   return redirect || '/'
 })
+
+const registerLink = computed(() => ({
+  path: '/register',
+  query: route.query.redirect ? { redirect: route.query.redirect } : {}
+}))
 
 async function handleLogin() {
   error.value = ''

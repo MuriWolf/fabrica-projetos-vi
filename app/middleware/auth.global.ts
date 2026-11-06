@@ -2,7 +2,7 @@ export default defineNuxtRouteMiddleware((to) => {
   const auth = useAuth()
 
   // Public pages do not require a session.
-  const publicPages = ['/login']
+  const publicPages = ['/login', '/register']
   const isPublicPage = publicPages.some(page => to.path.startsWith(page)) || to.meta.public === true
 
   if (!auth.isAuthenticated.value && !isPublicPage) {

@@ -33,6 +33,15 @@ available, set it to `false` and start the backend on port `5080`.
 Mock data stores CPF as digits only. The UI formats it as `000.000.000-00`
 and validates both check digits before saving.
 
+### Registration
+
+The `/register` page creates an account with e-mail, CPF and password, then
+signs the user in automatically.
+
+- **Mock mode:** registrations are kept in memory for the current app session.
+  They are lost on a full reload after logging out.
+- **Real API:** uses `POST /api/users` followed by `POST /api/auth/login`.
+
 ## Scripts
 
 ```bash

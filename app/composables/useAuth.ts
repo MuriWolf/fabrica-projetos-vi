@@ -40,14 +40,25 @@ function normalizeUser(value: AuthUser | null | undefined): AuthUser | null {
   return { ...value, cpf: onlyDigits(value.cpf) }
 }
 
-function getErrorMessage(error: any): string {
+function getErrorMessage(error: any, fallback = 'E-mail ou senha inválidos.'): string {
   const data = error?.data
 
   if (typeof data === 'string' && data.trim()) return data
+  if (data?.detail) return data.detail
   if (data?.message) return data.message
+
+  if (data?.errors && typeof data.errors === 'object') {
+    const firstError = Object.values(data.errors).flat().find(Boolean)
+    if (typeof firstError === 'string') return firstError
+  }
+
   if (error?.message) return error.message
 
-  return 'E-mail ou senha inválidos.'
+  return fallback
+}
+
+function generateMockUserId() {
+  return `user-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
 /**
@@ -59,6 +70,11 @@ function getErrorMessage(error: any): string {
  */
 export function useAuth() {
   const config = useRuntimeConfig()
+
+  // Kept in shared state so a registration made in mock mode can be used by login.
+  const mockUsers = useState<MockUser[]>('mock_users', () =>
+    (usersData.users as MockUser[]).map(user => ({ ...user }))
+  )
 
   const tokenCookie = useCookie<string | null>('auth_token', {
     default: () => null,
@@ -97,8 +113,9 @@ export function useAuth() {
       if (config.public.useMocks) {
         await delay(500)
 
-        const users = usersData.users as MockUser[]
-        const found = users.find(u => u.email.toLowerCase() === email.toLowerCase())
+        const found = mockUsers.value.find(
+          user => user.email.toLowerCase() === email.toLowerCase()
+        )
 
         if (!found || found.password !== password) {
           throw new Error('E-mail ou senha inválidos.')
@@ -156,6 +173,67 @@ export function useAuth() {
     }
   }
 
+  async function register(email: string, password: string, cpf: string) {
+    isLoading.value = true
+
+    try {
+      const normalizedEmail = email.trim()
+      const normalizedCpf = onlyDigits(cpf)
+
+      if (config.public.useMocks) {
+        await delay(600)
+
+        const alreadyExists = mockUsers.value.some(
+          user => user.email.toLowerCase() === normalizedEmail.toLowerCase()
+        )
+
+        if (alreadyExists) {
+          throw new Error('Já existe uma conta com este e-mail.')
+        }
+
+        const newUser: MockUser = {
+          id: generateMockUserId(),
+          email: normalizedEmail,
+          password,
+          name: normalizedEmail.split('@')[0] || 'Usuário',
+          cpf: normalizedCpf,
+          role: 'Regular'
+        }
+
+        mockUsers.value.push(newUser)
+
+        setSession(generateMockToken(newUser), {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          phone: '',
+          cpf: newUser.cpf,
+          role: newUser.role
+        })
+
+        return true
+      }
+
+      await $fetch(`${config.public.apiBaseUrl}/api/users`, {
+        method: 'POST',
+        body: {
+          email: normalizedEmail,
+          password,
+          cpf: normalizedCpf
+        },
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      // Sign in immediately after the account is created.
+      await login(normalizedEmail, password)
+      return true
+    } catch (error: any) {
+      throw new Error(getErrorMessage(error, 'Não foi possível criar a conta.'))
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function logout() {
     token.value = ''
     user.value = null
@@ -195,6 +273,7 @@ export function useAuth() {
     isAdmin,
     isLoading,
     login,
+    register,
     logout,
     restoreAuth,
     updateUser,
