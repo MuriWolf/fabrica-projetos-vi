@@ -24,11 +24,14 @@ available, set it to `false` and start the backend on port `5080`.
 
 ### Mock users
 
-| E-mail | Password | Role |
-|---|---|---|
-| `aluno@ages.edu.br` | `123456` | Regular |
-| `professor@ages.edu.br` | `abcd1234` | Regular |
-| `admin@example.com` | `admin` | Admin |
+| E-mail | Password | CPF | Role |
+|---|---|---|---|
+| `aluno@ages.edu.br` | `123456` | `529.982.247-25` | Regular |
+| `professor@ages.edu.br` | `abcd1234` | `111.444.777-35` | Regular |
+| `admin@example.com` | `admin` | `123.456.789-09` | Admin |
+
+Mock data stores CPF as digits only. The UI formats it as `000.000.000-00`
+and validates both check digits before saving.
 
 ## Scripts
 
