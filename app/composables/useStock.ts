@@ -700,6 +700,7 @@ export function useStock() {
     batches,
     healthUnits,
     stocks,
+    movements,
     alerts,
 
     // Load
