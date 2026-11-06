@@ -42,6 +42,15 @@ signs the user in automatically.
   They are lost on a full reload after logging out.
 - **Real API:** uses `POST /api/users` followed by `POST /api/auth/login`.
 
+### Profile in real mode
+
+The backend stores only e-mail, CPF and password. Name and phone remain local to
+the browser, so those fields are disabled when `NUXT_PUBLIC_USE_MOCKS=false`.
+
+Saving in real mode requires the account password because
+`PUT /api/users/{id}` requires `email`, `password` and `cpf`. The password field
+accepts the current password (to keep it) or a new one (to change it).
+
 ## Scripts
 
 ```bash

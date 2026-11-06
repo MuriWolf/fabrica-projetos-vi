@@ -21,8 +21,9 @@ function delay(ms: number) {
 }
 
 /**
- * Profile adapter. Uses the authenticated user as the source of truth while
- * the backend still exposes only id/email on /api/users.
+ * Profile adapter. Uses the authenticated user as the source of truth.
+ * The backend stores id, email, CPF and password; name, phone and role are
+ * local-only until the API supports them.
  */
 export function useProfile() {
   const config = useRuntimeConfig()
@@ -106,30 +107,65 @@ export function useProfile() {
     }
   }
 
-  async function saveProfile(updates: Partial<Profile>): Promise<Profile> {
+  async function saveProfile(updates: Partial<Profile>, password?: string): Promise<Profile> {
     loading.value = true
     error.value = null
 
     try {
-      profile.value = { ...profile.value, ...updates }
+      if (useMocks) {
+        profile.value = { ...profile.value, ...updates }
 
-      // Keep the sidebar and the persisted session in sync with the profile.
+        // Keep the sidebar and the persisted session in sync with the profile.
+        auth.updateUser({
+          name: profile.value.name,
+          email: profile.value.email,
+          phone: profile.value.phone,
+          cpf: profile.value.cpf,
+          role: profile.value.role
+        })
+
+        await delay(500)
+        return profile.value
+      }
+
+      // PUT /api/users/{id} requires email, password and CPF. The backend has no
+      // name, phone or role fields yet, so those stay local to the browser.
+      if (!password || password.length < 8) {
+        throw new Error(
+          'Informe uma senha com pelo menos 8 caracteres para salvar as alterações.'
+        )
+      }
+
+      const userId = profile.value.id
+      if (!userId) {
+        throw new Error('Não foi possível identificar o usuário para salvar o perfil.')
+      }
+
+      const email = (updates.email ?? profile.value.email).trim()
+      const cpf = onlyDigits(updates.cpf ?? profile.value.cpf)
+
+      const user = await api<BackendUser>(`/api/users/${userId}`, {
+        method: 'PUT',
+        body: { email, password, cpf }
+      })
+
+      profile.value = {
+        ...profile.value,
+        ...updates,
+        id: user.id || userId,
+        email: user.email || email,
+        cpf: onlyDigits(user.cpf || user.Cpf || cpf)
+      }
+
       auth.updateUser({
-        name: profile.value.name,
+        id: profile.value.id || '',
         email: profile.value.email,
+        name: profile.value.name,
         phone: profile.value.phone,
         cpf: profile.value.cpf,
         role: profile.value.role
       })
 
-      if (useMocks) {
-        await delay(500)
-        return profile.value
-      }
-
-      // The reference backend only accepts email/password on PUT /api/users/{id}
-      // and has no name/phone/role fields yet. Keep the local profile updated
-      // until those fields exist server-side.
       return profile.value
     } catch (err: any) {
       error.value = err?.data?.message || err?.message || 'Erro ao salvar perfil'

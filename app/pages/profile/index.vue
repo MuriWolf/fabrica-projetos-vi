@@ -38,16 +38,40 @@
         :title="error"
       />
 
+      <UAlert
+        v-if="!isMockMode"
+        color="warning"
+        variant="soft"
+        icon="i-lucide-info"
+        title="Modo API real"
+        description="Nome e telefone são mantidos apenas neste navegador. CPF e senha são salvos no servidor."
+      />
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <UFormField label="Nome" class="w-full">
-          <UInput v-model="profile.name" placeholder="Seu nome completo" class="w-full" />
+        <UFormField
+          label="Nome"
+          class="w-full"
+          :description="!isMockMode ? 'Não armazenado pelo backend' : undefined"
+        >
+          <UInput
+            v-model="profile.name"
+            placeholder="Seu nome completo"
+            class="w-full"
+            :disabled="!isMockMode"
+          />
         </UFormField>
 
         <UFormField label="E-mail" class="w-full">
           <UInput v-model="profile.email" disabled class="w-full" />
         </UFormField>
 
-        <UFormField label="CPF" class="w-full" required :error="cpfError || undefined">
+        <UFormField
+          label="CPF"
+          class="w-full"
+          required
+          :error="cpfError || undefined"
+          :description="!isMockMode ? 'Salvo no servidor ao confirmar a senha' : undefined"
+        >
           <UInput
             v-model="cpfModel"
             placeholder="000.000.000-00"
@@ -58,8 +82,47 @@
           />
         </UFormField>
 
-        <UFormField label="Telefone" class="w-full">
-          <UInput v-model="profile.phone" placeholder="(XX) XXXXX-XXXX" class="w-full" />
+        <UFormField
+          v-if="!isMockMode"
+          label="Senha"
+          class="w-full"
+          required
+          :error="passwordError || undefined"
+          description="Informe sua senha atual ou uma nova senha."
+        >
+          <UInput
+            v-model="password"
+            :type="showPassword ? 'text' : 'password'"
+            placeholder="••••••••"
+            icon="i-heroicons-key"
+            autocomplete="current-password"
+            class="w-full"
+            @blur="passwordTouched = true"
+          >
+            <template #trailing>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                size="xs"
+                :padded="false"
+                @click="showPassword = !showPassword"
+              />
+            </template>
+          </UInput>
+        </UFormField>
+
+        <UFormField
+          label="Telefone"
+          class="w-full"
+          :description="!isMockMode ? 'Não armazenado pelo backend' : undefined"
+        >
+          <UInput
+            v-model="profile.phone"
+            placeholder="(XX) XXXXX-XXXX"
+            class="w-full"
+            :disabled="!isMockMode"
+          />
         </UFormField>
 
         <UFormField label="Função" class="w-full">
@@ -160,6 +223,8 @@ definePageMeta({
   layout: 'protected'
 })
 
+const config = useRuntimeConfig()
+const isMockMode = config.public.useMocks
 const auth = useAuth()
 const { isAdmin } = auth
 const toast = useToast()
@@ -176,6 +241,9 @@ const {
 
 const showDeleteModal = ref(false)
 const cpfTouched = ref(false)
+const password = ref('')
+const passwordTouched = ref(false)
+const showPassword = ref(false)
 
 const cpfModel = computed({
   get: () => formatCpf(profile.value.cpf),
@@ -193,6 +261,15 @@ const cpfError = computed(() => {
   return ''
 })
 
+const passwordError = computed(() => {
+  if (isMockMode || !passwordTouched.value) return ''
+
+  if (!password.value) return 'Informe sua senha para salvar'
+  if (password.value.length < 8) return 'A senha deve ter pelo menos 8 caracteres'
+
+  return ''
+})
+
 onMounted(async () => {
   try {
     await loadProfile()
@@ -203,6 +280,7 @@ onMounted(async () => {
 
 async function handleSave() {
   cpfTouched.value = true
+  passwordTouched.value = true
 
   if (!profile.value.cpf || !isValidCpf(profile.value.cpf)) {
     toast.add({
@@ -216,28 +294,55 @@ async function handleSave() {
     return
   }
 
-  try {
-    await saveProfile({
-      name: profile.value.name,
-      phone: profile.value.phone,
-      cpf: profile.value.cpf,
-      role: profile.value.role
+  if (!isMockMode && (!password.value || password.value.length < 8)) {
+    toast.add({
+      title: 'Senha obrigatória',
+      description:
+        'Informe sua senha atual ou uma nova senha com pelo menos 8 caracteres.',
+      icon: 'i-lucide-x-circle',
+      color: 'error'
     })
+    return
+  }
+
+  try {
+    await saveProfile(
+      {
+        name: profile.value.name,
+        phone: profile.value.phone,
+        cpf: profile.value.cpf,
+        role: profile.value.role
+      },
+      password.value
+    )
+
+    password.value = ''
+    passwordTouched.value = false
 
     toast.add({
       title: 'Sucesso!',
-      description: 'Perfil salvo com sucesso.',
+      description: isMockMode
+        ? 'Perfil salvo com sucesso.'
+        : 'CPF e senha salvos. Nome e telefone continuam apenas neste navegador.',
       icon: 'i-lucide-check',
       color: 'primary'
     })
-  } catch {
-    // The error state is rendered in the page.
+  } catch (err: any) {
+    toast.add({
+      title: 'Erro',
+      description: err.message || 'Não foi possível salvar o perfil.',
+      icon: 'i-lucide-x-circle',
+      color: 'error'
+    })
   }
 }
 
 function handleCancel() {
   resetProfile()
   cpfTouched.value = false
+  password.value = ''
+  passwordTouched.value = false
+  showPassword.value = false
 }
 
 async function confirmDelete() {
