@@ -232,7 +232,11 @@ export function useStock() {
   }
 
   function rebuildMockAlerts() {
-    alerts.value = batches.value
+    const resolvedById = new Map(
+      alerts.value.map(alert => [alert.id, alert.resolved])
+    )
+
+    const derivedAlerts: ExpirationAlert[] = batches.value
       .filter(batch => daysUntil(batch.expirationDate) <= ALERT_WINDOW_DAYS)
       .map(batch => {
         const medicine = medicines.value.find(item => item.id === batch.medicineId)
@@ -242,7 +246,7 @@ export function useStock() {
           medicineId: batch.medicineId,
           batchId: batch.id,
           alertDate: batch.expirationDate,
-          resolved: false,
+          resolved: resolvedById.get(`alert-${batch.id}`) ?? false,
           medicineName: medicine?.name,
           lotNumber: batch.batchNumber,
           quantity: batch.quantity,
@@ -250,6 +254,23 @@ export function useStock() {
           daysUntilExpiry: daysUntil(batch.expirationDate)
         }
       })
+
+    // Mantém os alertas pré-carregados cujos lotes não fazem parte da lista
+    // local, para que a tela de alertas tenha dados no modo mock.
+    const derivedBatchIds = new Set(derivedAlerts.map(alert => alert.batchId))
+    const preservedAlerts = alerts.value
+      .filter(alert => !derivedBatchIds.has(alert.batchId))
+      .map(alert => ({
+        ...alert,
+        resolved: resolvedById.get(alert.id) ?? Boolean(alert.resolved)
+      }))
+
+    const merged = new Map<string, ExpirationAlert>()
+
+    for (const alert of preservedAlerts) merged.set(alert.id, alert)
+    for (const alert of derivedAlerts) merged.set(alert.id, alert)
+
+    alerts.value = Array.from(merged.values())
   }
 
   async function loadAll() {
