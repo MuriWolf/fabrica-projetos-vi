@@ -1,10 +1,12 @@
 import usersData from '~/mocks/users.json'
+import { onlyDigits } from '~/utils/cpf'
 
 export interface AuthUser {
   id: string
   email: string
   name: string
   phone: string
+  cpf: string
   role: string
 }
 
@@ -13,6 +15,7 @@ interface MockUser {
   email: string
   password: string
   name: string
+  cpf: string
   role: string
 }
 
@@ -28,6 +31,13 @@ function delay(ms: number) {
 
 function generateMockToken(user: MockUser) {
   return `mock.${user.id}.${Date.now()}`
+}
+
+// Sessions created before CPF support may not have the field yet.
+function normalizeUser(value: AuthUser | null | undefined): AuthUser | null {
+  if (!value) return null
+
+  return { ...value, cpf: onlyDigits(value.cpf) }
 }
 
 function getErrorMessage(error: any): string {
@@ -65,17 +75,19 @@ export function useAuth() {
   })
 
   const token = useState<string>('auth_token', () => tokenCookie.value || '')
-  const user = useState<AuthUser | null>('auth_user', () => userCookie.value || null)
+  const user = useState<AuthUser | null>('auth_user', () => normalizeUser(userCookie.value))
   const isLoading = useState<boolean>('auth_loading', () => false)
 
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.role === 'Admin')
 
   function setSession(newToken: string, newUser: AuthUser) {
+    const normalizedUser = normalizeUser(newUser)
+
     token.value = newToken
-    user.value = newUser
+    user.value = normalizedUser
     tokenCookie.value = newToken
-    userCookie.value = newUser
+    userCookie.value = normalizedUser
   }
 
   async function login(email: string, password: string) {
@@ -97,6 +109,7 @@ export function useAuth() {
           email: found.email,
           name: found.name,
           phone: '',
+          cpf: onlyDigits(found.cpf),
           role: found.role
         }
 
@@ -111,10 +124,11 @@ export function useAuth() {
       })
 
       // The backend currently returns only the token; fetch the user separately.
-      let remoteUser: { id: string; email: string } | null = null
+      type RemoteUser = { id: string; email: string; cpf?: string; Cpf?: string }
+      let remoteUser: RemoteUser | null = null
 
       try {
-        remoteUser = await $fetch<{ id: string; email: string }>(
+        remoteUser = await $fetch<RemoteUser>(
           `${config.public.apiBaseUrl}/api/users/email/${encodeURIComponent(email)}`,
           { headers: { Authorization: `Bearer ${response.token}` } }
         )
@@ -127,6 +141,8 @@ export function useAuth() {
         email: remoteUser?.email || email,
         name: email.split('@')[0] || email,
         phone: '',
+        // Accept both camelCase and PascalCase while the backend contract settles.
+        cpf: onlyDigits(remoteUser?.cpf || remoteUser?.Cpf),
         // Roles do not exist in the backend yet.
         role: 'Regular'
       }
@@ -149,14 +165,17 @@ export function useAuth() {
 
   function restoreAuth() {
     token.value = tokenCookie.value || ''
-    user.value = userCookie.value || null
+    user.value = normalizeUser(userCookie.value)
   }
 
   function updateUser(updates: Partial<AuthUser>) {
     if (!user.value) return
 
-    user.value = { ...user.value, ...updates }
-    userCookie.value = user.value
+    const updatedUser = normalizeUser({ ...user.value, ...updates })
+    if (!updatedUser) return
+
+    user.value = updatedUser
+    userCookie.value = updatedUser
   }
 
   function getAuthHeader() {

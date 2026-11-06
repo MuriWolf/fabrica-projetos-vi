@@ -5,6 +5,7 @@
       "email": "aluno@ages.edu.br",
       "password": "123456",
       "name": "Aluno Teste",
+      "cpf": "52998224725",
       "role": "Regular"
     },
     {
@@ -12,6 +13,7 @@
       "email": "professor@ages.edu.br",
       "password": "abcd1234",
       "name": "Professor Teste",
+      "cpf": "11144477735",
       "role": "Regular"
     },
     {
@@ -19,6 +21,7 @@
       "email": "admin@example.com",
       "password": "admin",
       "name": "Admin",
+      "cpf": "12345678909",
       "role": "Admin"
     }
   ],

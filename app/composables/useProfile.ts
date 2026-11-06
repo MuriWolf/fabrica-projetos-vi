@@ -1,14 +1,19 @@
+import { onlyDigits } from '~/utils/cpf'
+
 interface Profile {
   id?: string
   name: string
   email: string
   phone: string
+  cpf: string
   role: string
 }
 
 interface BackendUser {
   id: string
   email: string
+  cpf?: string
+  Cpf?: string
 }
 
 function delay(ms: number) {
@@ -29,6 +34,7 @@ export function useProfile() {
     name: '',
     email: '',
     phone: '',
+    cpf: '',
     role: ''
   }))
   const loading = useState<boolean>('profile_loading', () => false)
@@ -53,6 +59,7 @@ export function useProfile() {
           name: currentUser.name,
           email: currentUser.email,
           phone: currentUser.phone || '(51) 99999-9999',
+          cpf: onlyDigits(currentUser.cpf),
           role: currentUser.role
         }
 
@@ -60,6 +67,7 @@ export function useProfile() {
           name: profile.value.name,
           email: profile.value.email,
           phone: profile.value.phone,
+          cpf: profile.value.cpf,
           role: profile.value.role
         })
 
@@ -75,6 +83,8 @@ export function useProfile() {
         name: currentUser.name || user.email.split('@')[0] || 'Usuário',
         email: user.email,
         phone: currentUser.phone || '',
+        // Older API responses do not include CPF; fall back to the session.
+        cpf: onlyDigits(user.cpf || user.Cpf || currentUser.cpf),
         role: currentUser.role || 'Regular'
       }
 
@@ -83,6 +93,7 @@ export function useProfile() {
         email: profile.value.email,
         name: profile.value.name,
         phone: profile.value.phone,
+        cpf: profile.value.cpf,
         role: profile.value.role
       })
 
@@ -107,6 +118,7 @@ export function useProfile() {
         name: profile.value.name,
         email: profile.value.email,
         phone: profile.value.phone,
+        cpf: profile.value.cpf,
         role: profile.value.role
       })
 
@@ -161,6 +173,7 @@ export function useProfile() {
       name: currentUser?.name || '',
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
+      cpf: onlyDigits(currentUser?.cpf),
       role: currentUser?.role || 'Usuário'
     }
   }

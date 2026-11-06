@@ -17,6 +17,9 @@
             {{ profile.name || 'Usuário' }}
           </h2>
           <p class="text-gray-500">{{ profile.email }}</p>
+          <p class="text-sm text-gray-400">
+            {{ formatCpf(profile.cpf) || 'CPF não informado' }}
+          </p>
         </div>
       </div>
     </template>
@@ -42,6 +45,17 @@
 
         <UFormField label="E-mail" class="w-full">
           <UInput v-model="profile.email" disabled class="w-full" />
+        </UFormField>
+
+        <UFormField label="CPF" class="w-full" required :error="cpfError || undefined">
+          <UInput
+            v-model="cpfModel"
+            placeholder="000.000.000-00"
+            inputmode="numeric"
+            maxlength="14"
+            class="w-full"
+            @blur="cpfTouched = true"
+          />
         </UFormField>
 
         <UFormField label="Telefone" class="w-full">
@@ -140,6 +154,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatCpf, isValidCpf, onlyDigits } from '~/utils/cpf'
+
 definePageMeta({
   layout: 'protected'
 })
@@ -159,6 +175,23 @@ const {
 } = useProfile()
 
 const showDeleteModal = ref(false)
+const cpfTouched = ref(false)
+
+const cpfModel = computed({
+  get: () => formatCpf(profile.value.cpf),
+  set: (value: string) => {
+    profile.value.cpf = onlyDigits(value).slice(0, 11)
+  }
+})
+
+const cpfError = computed(() => {
+  if (!cpfTouched.value) return ''
+
+  if (!profile.value.cpf) return 'CPF é obrigatório'
+  if (!isValidCpf(profile.value.cpf)) return 'Informe um CPF válido'
+
+  return ''
+})
 
 onMounted(async () => {
   try {
@@ -169,10 +202,25 @@ onMounted(async () => {
 })
 
 async function handleSave() {
+  cpfTouched.value = true
+
+  if (!profile.value.cpf || !isValidCpf(profile.value.cpf)) {
+    toast.add({
+      title: 'CPF inválido',
+      description: profile.value.cpf
+        ? 'Informe um CPF válido.'
+        : 'O CPF é obrigatório.',
+      icon: 'i-lucide-x-circle',
+      color: 'error'
+    })
+    return
+  }
+
   try {
     await saveProfile({
       name: profile.value.name,
       phone: profile.value.phone,
+      cpf: profile.value.cpf,
       role: profile.value.role
     })
 
@@ -189,6 +237,7 @@ async function handleSave() {
 
 function handleCancel() {
   resetProfile()
+  cpfTouched.value = false
 }
 
 async function confirmDelete() {

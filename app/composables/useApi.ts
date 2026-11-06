@@ -1,4 +1,5 @@
 import type { AuthUser } from './useAuth'
+import { onlyDigits } from '~/utils/cpf'
 
 // Shared fetch wrapper: injects the auth token and handles expired sessions.
 export function useApi() {
@@ -11,7 +12,11 @@ export function useApi() {
   const userCookie = useCookie<AuthUser | null>('auth_user', { default: () => null })
 
   const tokenState = useState<string>('auth_token', () => tokenCookie.value || '')
-  const userState = useState<AuthUser | null>('auth_user', () => userCookie.value || null)
+  const userState = useState<AuthUser | null>('auth_user', () => {
+    const user = userCookie.value
+
+    return user ? { ...user, cpf: onlyDigits(user.cpf) } : null
+  })
 
   return $fetch.create({
     baseURL: config.public.apiBaseUrl,
