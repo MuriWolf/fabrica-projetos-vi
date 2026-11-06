@@ -1,8 +1,8 @@
 # Fábrica de Projetos Ágeis VI — Frontend
 
-Nuxt 4 + Nuxt UI application for managing medicine stock.
+Aplicação Nuxt 4 + Nuxt UI para gerenciamento de estoque de medicamentos.
 
-## Setup
+## Instalação
 
 ```bash
 npm install
@@ -10,52 +10,55 @@ cp .env.example .env
 npm run dev
 ```
 
-The app runs on `http://localhost:3000`.
+A aplicação roda em `http://localhost:3000`.
 
-## Configuration
+## Configuração
 
-| Variable | Default | Description |
+| Variável | Padrão | Descrição |
 |---|---|---|
-| `NUXT_PUBLIC_API_BASE_URL` | `http://localhost:5080` | Base URL of the ASP.NET backend |
-| `NUXT_PUBLIC_USE_MOCKS` | `true` | Use the local JSON mocks instead of the API |
+| `NUXT_PUBLIC_API_BASE_URL` | `http://localhost:5080` | URL base do backend ASP.NET |
+| `NUXT_PUBLIC_USE_MOCKS` | `true` | Usa os mocks JSON locais em vez da API |
 
-While the backend is not ready, keep `NUXT_PUBLIC_USE_MOCKS=true`. When it is
-available, set it to `false` and start the backend on port `5080`.
+Enquanto o backend não estiver pronto, mantenha `NUXT_PUBLIC_USE_MOCKS=true`.
+Quando ele estiver disponível, defina como `false` e inicie o backend na porta
+`5080`.
 
-### Mock users
+### Usuários de teste
 
-| E-mail | Password | CPF | Role |
+| E-mail | Senha | CPF | Perfil |
 |---|---|---|---|
 | `aluno@ages.edu.br` | `123456` | `529.982.247-25` | Regular |
 | `professor@ages.edu.br` | `abcd1234` | `111.444.777-35` | Regular |
 | `admin@example.com` | `admin` | `123.456.789-09` | Admin |
 
-Mock data stores CPF as digits only. The UI formats it as `000.000.000-00`
-and validates both check digits before saving.
+Os dados mock armazenam o CPF apenas com dígitos. A interface o formata como
+`000.000.000-00` e valida os dois dígitos verificadores antes de salvar.
 
-### Registration
+### Cadastro
 
-The `/register` page creates an account with e-mail, CPF and password, then
-signs the user in automatically.
+A página `/register` cria uma conta com e-mail, CPF e senha e autentica o
+usuário automaticamente.
 
-- **Mock mode:** registrations are kept in memory for the current app session.
-  They are lost on a full reload after logging out.
-- **Real API:** uses `POST /api/users` followed by `POST /api/auth/login`.
+- **Modo mock:** os cadastros ficam em memória durante a sessão atual da
+  aplicação. Eles são perdidos após recarregar a página por completo depois de
+  sair.
+- **API real:** usa `POST /api/users` seguido de `POST /api/auth/login`.
 
-### Profile in real mode
+### Perfil no modo real
 
-The backend stores only e-mail, CPF and password. Name and phone remain local to
-the browser, so those fields are disabled when `NUXT_PUBLIC_USE_MOCKS=false`.
+O backend armazena apenas e-mail, CPF e senha. Nome e telefone permanecem locais
+no navegador, portanto esses campos ficam desabilitados quando
+`NUXT_PUBLIC_USE_MOCKS=false`.
 
-Saving in real mode requires the account password because
-`PUT /api/users/{id}` requires `email`, `password` and `cpf`. The password field
-accepts the current password (to keep it) or a new one (to change it).
+Salvar no modo real exige a senha da conta porque `PUT /api/users/{id}` requer
+`email`, `password` e `cpf`. O campo de senha aceita a senha atual (para mantê-la)
+ou uma nova (para alterá-la).
 
 ## Scripts
 
 ```bash
-npm run dev        # development server
-npm run build      # production build
-npm run preview    # preview production build
-npm run typecheck  # TypeScript checks
+npm run dev        # servidor de desenvolvimento
+npm run build      # build de produção
+npm run preview    # pré-visualização do build de produção
+npm run typecheck  # verificação de tipos TypeScript
 ```
