@@ -160,7 +160,7 @@
     </template>
   </UCard>
 
-  <UCard v-if="isAdmin" class="mt-6 border border-red-200">
+  <UCard v-if="isAdmin" class="mt-6 border border-red-200 bg-red-50/30">
     <template #header>
       <div class="flex items-center gap-2 text-red-700">
         <UIcon name="i-lucide-triangle-alert" class="w-5 h-5" />
