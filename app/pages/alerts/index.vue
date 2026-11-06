@@ -60,6 +60,7 @@
         icon="i-lucide-search"
         clearable
         class="flex-1"
+        aria-label="Buscar alerta"
         @clear="filters.search = ''"
       />
 
@@ -67,12 +68,14 @@
         v-model="filters.status"
         :items="statusOptions"
         class="lg:max-w-48"
+        aria-label="Filtrar por status do alerta"
       />
 
       <USelect
         v-model="filters.priority"
         :items="priorityOptions"
         class="lg:max-w-48"
+        aria-label="Filtrar por prioridade do alerta"
       />
 
       <UButton
@@ -87,6 +90,15 @@
   </UCard>
 
   <UCard>
+    <UAlert
+      v-if="stockError"
+      color="error"
+      variant="soft"
+      icon="i-lucide-alert-circle"
+      :title="stockError"
+      class="mb-4"
+    />
+
     <div v-if="loading" class="text-center py-12">
       <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
       <p class="text-gray-500">Carregando alertas...</p>
@@ -100,7 +112,12 @@
       </p>
     </div>
 
-    <UTable v-else :data="filteredRows" :columns="columns">
+    <UTable
+      v-else
+      :data="paginatedRows"
+      :columns="columns"
+      caption="Lista de alertas de validade"
+    >
       <template #medicineName-cell="{ row }">
         <div>
           <p class="font-medium text-gray-900">{{ row.original.medicineName }}</p>
@@ -152,11 +169,21 @@
       </template>
     </UTable>
 
-    <div v-if="filteredRows.length > 0" class="mt-4 pt-4 border-t border-gray-100">
+    <div
+      v-if="filteredRows.length > 0"
+      class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-4 pt-4 border-t border-gray-100"
+    >
       <p class="text-sm text-gray-500">
-        {{ filteredRows.length }}
+        Mostrando {{ from }} a {{ to }} de {{ filteredRows.length }}
         {{ filteredRows.length === 1 ? 'alerta' : 'alertas' }}
       </p>
+      <UPagination
+        v-model:page="page"
+        :total="filteredRows.length"
+        :items-per-page="pageSize"
+        :sibling-count="1"
+        show-edges
+      />
     </div>
   </UCard>
 
@@ -199,6 +226,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { useStock, type ExpirationAlert } from '~/composables/useStock'
+import { usePagination } from '~/composables/usePagination'
 
 definePageMeta({
   layout: 'protected'
@@ -225,6 +253,7 @@ const stock = useStock()
 const { isAdmin } = auth
 const {
   loading,
+  error: stockError,
   alerts,
   batches,
   healthUnits,
@@ -247,13 +276,13 @@ const priorityOptions = [
 ]
 
 const columns: TableColumn<AlertRow>[] = [
-  { accessorKey: 'medicineName', header: 'Medicamento / Unidade' },
-  { accessorKey: 'lotNumber', header: 'Lote' },
-  { accessorKey: 'quantity', header: 'Quantidade' },
-  { accessorKey: 'expiryDate', header: 'Vencimento' },
-  { accessorKey: 'daysUntilExpiry', header: 'Dias Restantes' },
-  { accessorKey: 'priority', header: 'Prioridade' },
-  { accessorKey: 'resolved', header: 'Status' },
+  { accessorKey: 'medicineName', header: 'Medicamento / Unidade', enableSorting: true },
+  { accessorKey: 'lotNumber', header: 'Lote', enableSorting: true },
+  { accessorKey: 'quantity', header: 'Quantidade', enableSorting: true },
+  { accessorKey: 'expiryDate', header: 'Vencimento', enableSorting: true },
+  { accessorKey: 'daysUntilExpiry', header: 'Dias Restantes', enableSorting: true },
+  { accessorKey: 'priority', header: 'Prioridade', enableSorting: true },
+  { accessorKey: 'resolved', header: 'Status', enableSorting: true },
   {
     id: 'actions',
     header: 'Ações',
@@ -339,6 +368,13 @@ const filteredRows = computed(() => {
 
   return result
 })
+
+const { page, pageSize, from, to, paginated: paginatedRows } =
+  usePagination(filteredRows)
+
+watch(filters, () => {
+  page.value = 1
+}, { deep: true })
 
 function getDaysUntilExpiry(alert: ExpirationAlert): number | null {
   const date = alert.expiryDate || alert.alertDate

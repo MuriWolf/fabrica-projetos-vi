@@ -69,6 +69,7 @@
         icon="i-lucide-search"
         clearable
         class="flex-1"
+        aria-label="Buscar movimentação"
         @clear="filters.search = ''"
       />
 
@@ -76,6 +77,7 @@
         v-model="filters.type"
         :items="filterTypeOptions"
         class="sm:max-w-52"
+        aria-label="Filtrar por tipo de movimentação"
       />
 
       <UButton
@@ -90,6 +92,15 @@
   </UCard>
 
   <UCard>
+    <UAlert
+      v-if="stockError"
+      color="error"
+      variant="soft"
+      icon="i-lucide-alert-circle"
+      :title="stockError"
+      class="mb-4"
+    />
+
     <div v-if="loading" class="text-center py-12">
       <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
       <p class="text-gray-500">Carregando movimentações...</p>
@@ -103,7 +114,12 @@
       </p>
     </div>
 
-    <UTable v-else :data="filteredRows" :columns="columns">
+    <UTable
+      v-else
+      :data="paginatedRows"
+      :columns="columns"
+      caption="Lista de movimentações de estoque"
+    >
       <template #medicineName-cell="{ row }">
         <div>
           <p class="font-medium text-gray-900">{{ row.original.medicineName }}</p>
@@ -133,11 +149,21 @@
       </template>
     </UTable>
 
-    <div v-if="filteredRows.length > 0" class="mt-4 pt-4 border-t border-gray-100">
+    <div
+      v-if="filteredRows.length > 0"
+      class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-4 pt-4 border-t border-gray-100"
+    >
       <p class="text-sm text-gray-500">
-        {{ filteredRows.length }}
+        Mostrando {{ from }} a {{ to }} de {{ filteredRows.length }}
         {{ filteredRows.length === 1 ? 'movimentação' : 'movimentações' }}
       </p>
+      <UPagination
+        v-model:page="page"
+        :total="filteredRows.length"
+        :items-per-page="pageSize"
+        :sibling-count="1"
+        show-edges
+      />
     </div>
   </UCard>
 
@@ -238,6 +264,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { useStock, type StockMovement } from '~/composables/useStock'
+import { usePagination } from '~/composables/usePagination'
 import {
   movementSchema,
   type MovementFormData
@@ -261,6 +288,7 @@ const stock = useStock()
 
 const {
   loading,
+  error: stockError,
   medicines,
   batches,
   movements,
@@ -280,10 +308,10 @@ const filterTypeOptions = [
 ]
 
 const columns: TableColumn<MovementRow>[] = [
-  { accessorKey: 'medicineName', header: 'Medicamento / Lote' },
-  { accessorKey: 'type', header: 'Tipo' },
-  { accessorKey: 'quantity', header: 'Quantidade' },
-  { accessorKey: 'occurredAt', header: 'Data' }
+  { accessorKey: 'medicineName', header: 'Medicamento / Lote', enableSorting: true },
+  { accessorKey: 'type', header: 'Tipo', enableSorting: true },
+  { accessorKey: 'quantity', header: 'Quantidade', enableSorting: true },
+  { accessorKey: 'occurredAt', header: 'Data', enableSorting: true }
 ]
 
 const filters = ref({
@@ -360,6 +388,13 @@ const filteredRows = computed(() => {
 
   return result
 })
+
+const { page, pageSize, from, to, paginated: paginatedRows } =
+  usePagination(filteredRows)
+
+watch(filters, () => {
+  page.value = 1
+}, { deep: true })
 
 const entryTotal = computed(() =>
   movements.value

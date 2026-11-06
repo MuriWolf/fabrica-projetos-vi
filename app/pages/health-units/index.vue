@@ -16,6 +16,7 @@
         icon="i-lucide-search"
         clearable
         class="flex-1"
+        aria-label="Buscar unidade de saúde"
         @clear="search = ''"
       />
 
@@ -30,6 +31,15 @@
     </div>
   </UCard>
 
+  <UAlert
+    v-if="stockError"
+    color="error"
+    variant="soft"
+    icon="i-lucide-alert-circle"
+    :title="stockError"
+    class="mb-4"
+  />
+
   <div v-if="loading" class="text-center py-12">
     <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
     <p class="text-gray-500">Carregando unidades de saúde...</p>
@@ -42,7 +52,7 @@
 
   <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
     <UCard
-      v-for="unit in filteredUnits"
+      v-for="unit in paginatedUnits"
       :key="unit.id"
       class="hover:shadow-md transition-shadow"
     >
@@ -86,6 +96,23 @@
         </div>
       </template>
     </UCard>
+  </div>
+
+  <div
+    v-if="filteredUnits.length > 0"
+    class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-4 pt-4 border-t border-gray-100"
+  >
+    <p class="text-sm text-gray-500">
+      Mostrando {{ from }} a {{ to }} de {{ filteredUnits.length }}
+      {{ filteredUnits.length === 1 ? 'unidade' : 'unidades' }}
+    </p>
+    <UPagination
+      v-model:page="page"
+      :total="filteredUnits.length"
+      :items-per-page="pageSize"
+      :sibling-count="1"
+      show-edges
+    />
   </div>
 
   <UModal v-if="showDetailsModal" v-model:open="showDetailsModal" title="Detalhes da Unidade">
@@ -147,6 +174,7 @@
 
 <script setup lang="ts">
 import { useStock, type HealthUnit } from '~/composables/useStock'
+import { usePagination } from '~/composables/usePagination'
 
 definePageMeta({
   layout: 'protected'
@@ -155,7 +183,7 @@ definePageMeta({
 const toast = useToast()
 const stock = useStock()
 
-const { loading, healthUnits, loadAll } = stock
+const { loading, error: stockError, healthUnits, loadAll } = stock
 
 const search = ref('')
 const showDetailsModal = ref(false)
@@ -163,13 +191,25 @@ const selectedUnit = ref<HealthUnit | null>(null)
 
 const filteredUnits = computed(() => {
   const term = search.value.trim().toLowerCase()
-  if (!term) return [...healthUnits.value]
 
-  return healthUnits.value.filter(unit => {
+  const units = [...healthUnits.value].sort((a, b) =>
+    a.name.localeCompare(b.name, 'pt-BR')
+  )
+
+  if (!term) return units
+
+  return units.filter(unit => {
     return [unit.name, unit.neighborhood, unit.zone, unit.cnes, unit.street]
       .filter(Boolean)
       .some(value => value.toLowerCase().includes(term))
   })
+})
+
+const { page, pageSize, from, to, paginated: paginatedUnits } =
+  usePagination(filteredUnits, 6)
+
+watch(search, () => {
+  page.value = 1
 })
 
 function fullAddress(unit: HealthUnit): string {

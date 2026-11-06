@@ -20,6 +20,8 @@
           color="neutral"
           variant="ghost"
           :icon="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-bars-3'"
+          :aria-label="isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'"
+          :title="isMobileMenuOpen ? 'Fechar menu' : 'Abrir menu'"
           @click="isMobileMenuOpen = !isMobileMenuOpen"
         />
       </div>
@@ -194,6 +196,8 @@
                 variant="ghost"
                 size="xs"
                 icon="i-heroicons-user-circle"
+                aria-label="Meu perfil"
+                title="Meu perfil"
               />
             </div>
 

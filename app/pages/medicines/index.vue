@@ -26,6 +26,7 @@
         icon="i-lucide-search"
         clearable
         class="flex-1"
+        aria-label="Buscar medicamento"
         @clear="search = ''"
       />
 
@@ -41,6 +42,15 @@
   </UCard>
 
   <UCard>
+    <UAlert
+      v-if="stockError"
+      color="error"
+      variant="soft"
+      icon="i-lucide-alert-circle"
+      :title="stockError"
+      class="mb-4"
+    />
+
     <div v-if="loading" class="text-center py-12">
       <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
       <p class="text-gray-500">Carregando medicamentos...</p>
@@ -54,7 +64,12 @@
       </p>
     </div>
 
-    <UTable v-else :data="filteredMedicines" :columns="columns">
+    <UTable
+      v-else
+      :data="paginatedMedicines"
+      :columns="columns"
+      caption="Lista de medicamentos"
+    >
       <template #name-cell="{ row }">
         <div>
           <p class="font-medium text-gray-900">{{ row.original.name }}</p>
@@ -72,6 +87,8 @@
             size="xs"
             icon="i-lucide-edit-2"
             class="cursor-pointer"
+            aria-label="Editar medicamento"
+            title="Editar medicamento"
             @click="openEditModal(row.original)"
           />
           <UButton
@@ -80,6 +97,8 @@
             size="xs"
             icon="i-lucide-trash-2"
             class="cursor-pointer"
+            aria-label="Excluir medicamento"
+            title="Excluir medicamento"
             @click="confirmDelete(row.original)"
           />
         </div>
@@ -88,12 +107,19 @@
 
     <div
       v-if="filteredMedicines.length > 0"
-      class="mt-4 pt-4 border-t border-gray-100"
+      class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mt-4 pt-4 border-t border-gray-100"
     >
       <p class="text-sm text-gray-500">
-        {{ filteredMedicines.length }}
+        Mostrando {{ from }} a {{ to }} de {{ filteredMedicines.length }}
         {{ filteredMedicines.length === 1 ? 'medicamento' : 'medicamentos' }}
       </p>
+      <UPagination
+        v-model:page="page"
+        :total="filteredMedicines.length"
+        :items-per-page="pageSize"
+        :sibling-count="1"
+        show-edges
+      />
     </div>
   </UCard>
 
@@ -208,6 +234,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { useStock, type Medicine } from '~/composables/useStock'
+import { usePagination } from '~/composables/usePagination'
 import {
   medicineSchema,
   type MedicineFormData
@@ -230,8 +257,15 @@ const auth = useAuth()
 const stock = useStock()
 
 const { isAdmin } = auth
-const { loading, medicines, loadAll, createMedicine, updateMedicine, deleteMedicine } =
-  stock
+const {
+  loading,
+  error: stockError,
+  medicines,
+  loadAll,
+  createMedicine,
+  updateMedicine,
+  deleteMedicine
+} = stock
 
 const search = ref('')
 const showFormModal = ref(false)
@@ -250,10 +284,10 @@ const formData = ref<MedicineFormData>({
 
 const columns: ComputedRef<TableColumn<MedicineRow>[]> = computed(() => {
   const fields: TableColumn<MedicineRow>[] = [
-    { accessorKey: 'name', header: 'Medicamento' },
-    { accessorKey: 'activeIngredient', header: 'Princípio Ativo' },
-    { accessorKey: 'dosage', header: 'Dosagem' },
-    { accessorKey: 'unit', header: 'Unidade' }
+    { accessorKey: 'name', header: 'Medicamento', enableSorting: true },
+    { accessorKey: 'activeIngredient', header: 'Princípio Ativo', enableSorting: true },
+    { accessorKey: 'dosage', header: 'Dosagem', enableSorting: true },
+    { accessorKey: 'unit', header: 'Unidade', enableSorting: true }
   ]
 
   if (isAdmin.value) {
@@ -279,6 +313,13 @@ const filteredMedicines = computed(() => {
       medicine.unit.toLowerCase().includes(term)
     )
   })
+})
+
+const { page, pageSize, from, to, paginated: paginatedMedicines } =
+  usePagination(filteredMedicines)
+
+watch(search, () => {
+  page.value = 1
 })
 
 async function loadMedicines() {
