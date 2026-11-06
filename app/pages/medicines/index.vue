@@ -68,6 +68,7 @@
       :data="paginatedMedicines"
       :columns="columns"
       caption="Lista de medicamentos"
+      class="h-[calc(100vh-392px)]"
     >
       <template #name-cell="{ row }">
         <div>

@@ -165,6 +165,7 @@
       :data="tableRows"
       :columns="columns"
       caption="Lista de lotes em estoque"
+      class="h-80 lg:h-[calc(100vh-516px)]"
     >
       <template #medicineName-cell="{ row }">
         <div>

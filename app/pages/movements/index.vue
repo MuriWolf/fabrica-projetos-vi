@@ -118,6 +118,7 @@
       :data="paginatedRows"
       :columns="columns"
       caption="Lista de movimentações de estoque"
+      class="h-[calc(100vh-512px)]"
     >
       <template #medicineName-cell="{ row }">
         <div>
