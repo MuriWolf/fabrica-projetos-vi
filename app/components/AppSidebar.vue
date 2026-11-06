@@ -239,6 +239,30 @@ const menuItems = [
     activeIcon: "i-heroicons-home-solid",
   },
   {
+    label: "Medicamentos",
+    icon: "i-heroicons-beaker",
+    to: "/medicines",
+    activeIcon: "i-heroicons-beaker-solid",
+  },
+  {
+    label: "Movimentações",
+    icon: "i-heroicons-arrows-right-left",
+    to: "/movements",
+    activeIcon: "i-heroicons-arrows-right-left-solid",
+  },
+  {
+    label: "Alertas",
+    icon: "i-heroicons-bell-alert",
+    to: "/alerts",
+    activeIcon: "i-heroicons-bell-alert-solid",
+  },
+  {
+    label: "Unidades de Saúde",
+    icon: "i-heroicons-building-office-2",
+    to: "/health-units",
+    activeIcon: "i-heroicons-building-office-2-solid",
+  },
+  {
     label: "Meu Perfil",
     icon: "i-heroicons-user",
     to: "/profile",
