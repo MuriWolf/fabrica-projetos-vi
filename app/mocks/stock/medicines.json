@@ -13,6 +13,34 @@
       "activeIngredient": "Ibuprofeno",
       "dosage": "600mg",
       "unit": "comprimido"
+    },
+    {
+      "id": "3",
+      "name": "Amoxicilina 250mg",
+      "activeIngredient": "Amoxicilina",
+      "dosage": "250mg",
+      "unit": "cápsula"
+    },
+    {
+      "id": "4",
+      "name": "Dipirona 500mg",
+      "activeIngredient": "Dipirona",
+      "dosage": "500mg",
+      "unit": "comprimido"
+    },
+    {
+      "id": "5",
+      "name": "Omeprazol 20mg",
+      "activeIngredient": "Omeprazol",
+      "dosage": "20mg",
+      "unit": "cápsula"
+    },
+    {
+      "id": "7",
+      "name": "Losartana 50mg",
+      "activeIngredient": "Losartana",
+      "dosage": "50mg",
+      "unit": "comprimido"
     }
   ],
   "categories": [

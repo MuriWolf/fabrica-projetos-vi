@@ -167,7 +167,7 @@ function toMockBatch(raw: any): Batch {
     ...batch,
     status: deriveBatchStatus(batch),
     stockId: `stock-${batch.id}`,
-    healthUnitId: healthUnitsData.healthUnits[0]?.id
+    healthUnitId: raw.healthUnitId ?? healthUnitsData.healthUnits[0]?.id
   }
 }
 

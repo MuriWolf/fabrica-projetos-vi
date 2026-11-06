@@ -9,6 +9,26 @@
       "zipCode": "90000-000",
       "zone": "Centro",
       "cnes": "1234567"
+    },
+    {
+      "id": "2",
+      "name": "Unidade Básica de Saúde Jardim das Acácias",
+      "street": "Rua das Acácias",
+      "number": "45",
+      "neighborhood": "Jardim das Acácias",
+      "zipCode": "90010-100",
+      "zone": "Sul",
+      "cnes": "2345678"
+    },
+    {
+      "id": "3",
+      "name": "UPA Norte",
+      "street": "Avenida Norte",
+      "number": "900",
+      "neighborhood": "Centro",
+      "zipCode": "90020-200",
+      "zone": "Norte",
+      "cnes": "3456789"
     }
   ]
 }

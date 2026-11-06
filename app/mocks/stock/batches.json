@@ -16,7 +16,58 @@
       "fabricationDate": "2026-01-12",
       "expirationDate": "2028-01-10",
       "quantity": 500,
-      "status": "available"
+      "status": "available",
+      "healthUnitId": "1"
+    },
+    {
+      "id": "batch-003",
+      "medicineId": "3",
+      "batchNumber": "LOT2025C003",
+      "fabricationDate": "2025-06-10",
+      "expirationDate": "2027-06-10",
+      "quantity": 100,
+      "status": "available",
+      "healthUnitId": "2"
+    },
+    {
+      "id": "batch-005",
+      "medicineId": "5",
+      "batchNumber": "LOT2025E005",
+      "fabricationDate": "2025-11-15",
+      "expirationDate": "2026-11-15",
+      "quantity": 200,
+      "status": "expiring_soon",
+      "healthUnitId": "3"
+    },
+    {
+      "id": "batch-007",
+      "medicineId": "7",
+      "batchNumber": "LOT2025G007",
+      "fabricationDate": "2025-03-20",
+      "expirationDate": "2027-03-20",
+      "quantity": 50,
+      "status": "low_stock",
+      "healthUnitId": "2"
+    },
+    {
+      "id": "batch-009",
+      "medicineId": "1",
+      "batchNumber": "LOT2025I009",
+      "fabricationDate": "2025-10-01",
+      "expirationDate": "2026-10-01",
+      "quantity": 600,
+      "status": "critical",
+      "healthUnitId": "3"
+    },
+    {
+      "id": "batch-010",
+      "medicineId": "4",
+      "batchNumber": "LOT2025J010",
+      "fabricationDate": "2025-01-20",
+      "expirationDate": "2027-01-20",
+      "quantity": 5,
+      "status": "low_stock",
+      "healthUnitId": "1"
     }
   ],
   "statuses": [
