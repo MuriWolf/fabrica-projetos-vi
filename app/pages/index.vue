@@ -1,6 +1,6 @@
 <template>
   <div class="mb-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 class="text-2xl font-bold text-gray-900">Gerenciamento de Estoque</h1>
         <p class="text-gray-500">Visualize e gerencie os medicamentos</p>
@@ -10,6 +10,7 @@
         v-if="isAdmin"
         color="primary"
         icon="i-lucide-plus"
+        class="w-full sm:w-auto"
         @click="openCreateModal"
       >
         Novo Lote
@@ -17,64 +18,92 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-    <UCard class="bg-purple-50/50">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-purple-100 border border-purple-200 flex items-center justify-center">
-          <UIcon name="i-lucide-pill" class="w-5 h-5 text-purple-600" />
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+    <NuxtLink
+      to="/medicines"
+      class="block rounded-xl focus-visible:outline-3 focus-visible:outline-primary/25"
+      aria-label="Ir para a tela de medicamentos"
+    >
+      <UCard class="bg-purple-50/50 h-full transition-shadow hover:shadow-md cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-purple-100 border border-purple-200 flex items-center justify-center">
+            <UIcon name="i-lucide-pill" class="w-5 h-5 text-purple-600" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Medicamentos</p>
+            <p class="text-2xl font-bold">{{ medicines.length }}</p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm text-gray-500">Medicamentos</p>
-          <p class="text-2xl font-bold">{{ medicines.length }}</p>
-        </div>
-      </div>
-    </UCard>
+      </UCard>
+    </NuxtLink>
 
-    <UCard class="bg-green-50/50">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-green-100 border border-green-200 flex items-center justify-center">
-          <UIcon name="i-lucide-package" class="w-5 h-5 text-green-600" />
+    <button
+      type="button"
+      class="text-left w-full rounded-xl focus-visible:outline-3 focus-visible:outline-primary/25"
+      aria-label="Filtrar lotes ativos"
+      @click="applyStatusFilter('available')"
+    >
+      <UCard class="bg-green-50/50 h-full transition-shadow hover:shadow-md cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-green-100 border border-green-200 flex items-center justify-center">
+            <UIcon name="i-lucide-package" class="w-5 h-5 text-green-600" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Lotes Ativos</p>
+            <p class="text-2xl font-bold">{{ activeBatches }}</p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm text-gray-500">Lotes Ativos</p>
-          <p class="text-2xl font-bold">{{ activeBatches }}</p>
-        </div>
-      </div>
-    </UCard>
+      </UCard>
+    </button>
 
-    <UCard class="bg-yellow-50/50">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-yellow-100 border border-orange-200 flex items-center justify-center">
-          <UIcon name="i-lucide-alert-triangle" class="w-5 h-5 text-yellow-600" />
+    <button
+      type="button"
+      class="text-left w-full rounded-xl focus-visible:outline-3 focus-visible:outline-primary/25"
+      aria-label="Filtrar lotes vencendo em breve"
+      @click="applyStatusFilter('expiring_soon')"
+    >
+      <UCard class="bg-yellow-50/50 h-full transition-shadow hover:shadow-md cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-yellow-100 border border-orange-200 flex items-center justify-center">
+            <UIcon name="i-lucide-alert-triangle" class="w-5 h-5 text-yellow-600" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Vencendo</p>
+            <p class="text-2xl font-bold">{{ expiringCount }}</p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm text-gray-500">Vencendo</p>
-          <p class="text-2xl font-bold">{{ expiringCount }}</p>
-        </div>
-      </div>
-    </UCard>
+      </UCard>
+    </button>
 
-    <UCard class="bg-red-50/50">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-red-100 border border-red-200 flex items-center justify-center">
-          <UIcon name="i-lucide-trending-down" class="w-5 h-5 text-red-600" />
+    <button
+      type="button"
+      class="text-left w-full rounded-xl focus-visible:outline-3 focus-visible:outline-primary/25"
+      aria-label="Filtrar lotes com estoque baixo ou crítico"
+      @click="applyStatusFilter('low_stock_group')"
+    >
+      <UCard class="bg-red-50/50 h-full transition-shadow hover:shadow-md cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-red-100 border border-red-200 flex items-center justify-center">
+            <UIcon name="i-lucide-trending-down" class="w-5 h-5 text-red-600" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Estoque Baixo</p>
+            <p class="text-2xl font-bold">{{ lowStockCount }}</p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm text-gray-500">Estoque Baixo</p>
-          <p class="text-2xl font-bold">{{ lowStockCount }}</p>
-        </div>
-      </div>
-    </UCard>
+      </UCard>
+    </button>
   </div>
 
   <UCard class="mb-6">
-    <div class="flex gap-4">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center">
       <UInput
         v-model="filters.search"
         placeholder="Buscar medicamento..."
         icon="i-lucide-search"
         clearable
         class="flex-1"
+        aria-label="Buscar lote por medicamento"
         @clear="filters.search = ''"
       />
 
@@ -83,6 +112,7 @@
         :items="medicines.map(m => ({ label: m.name, value: m.id }))"
         placeholder="Filtrar por medicamento"
         class="flex-1"
+        aria-label="Filtrar por medicamento"
       />
 
       <USelect
@@ -91,16 +121,18 @@
           { label: 'Todos', value: 'todos' },
           { label: 'Disponível', value: 'available' },
           { label: 'Estoque Baixo', value: 'low_stock' },
+          { label: 'Baixo ou Crítico', value: 'low_stock_group' },
           { label: 'Vencendo', value: 'expiring_soon' },
           { label: 'Crítico', value: 'critical' }
         ]"
-        class="flex-1 max-w-52"
+        class="flex-1 md:max-w-52"
         placeholder="Status"
+        aria-label="Filtrar por status do lote"
       />
 
       <UButton
         color="warning"
-        class="max-w-40"
+        class="md:max-w-40"
         :disabled="!isAnyFilterApplied"
         @click="resetFilters"
       >
@@ -110,6 +142,15 @@
   </UCard>
 
   <UCard class="lg:h-[calc(100vh-410px)]">
+    <UAlert
+      v-if="stockError"
+      color="error"
+      variant="soft"
+      icon="i-lucide-alert-circle"
+      :title="stockError"
+      class="mb-4"
+    />
+
     <div v-if="stock.loading.value" class="text-center py-12">
       <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
       <p class="text-gray-500">Carregando estoque...</p>
@@ -120,7 +161,12 @@
       <p class="text-gray-500">Nenhum lote encontrado</p>
     </div>
 
-    <UTable v-else :data="tableRows" :columns="columns">
+    <UTable
+      v-else
+      :data="tableRows"
+      :columns="columns"
+      caption="Lista de lotes em estoque"
+    >
       <template #medicineName-cell="{ row }">
         <div>
           <p class="font-medium">{{ row.original.medicineName }}</p>
@@ -144,8 +190,26 @@
 
       <template #actions-cell="{ row }">
         <div v-if="isAdmin" class="flex items-center gap-2">
-          <UButton color="primary" variant="soft" size="xs" icon="i-lucide-edit-2" class="cursor-pointer" @click="openEditModal(row.original)" />
-          <UButton color="error" variant="soft" size="xs" icon="i-lucide-trash-2" class="cursor-pointer" @click="confirmDelete(row.original)" />
+          <UButton
+            color="primary"
+            variant="soft"
+            size="xs"
+            icon="i-lucide-edit-2"
+            class="cursor-pointer"
+            aria-label="Editar lote"
+            title="Editar lote"
+            @click="openEditModal(row.original)"
+          />
+          <UButton
+            color="error"
+            variant="soft"
+            size="xs"
+            icon="i-lucide-trash-2"
+            class="cursor-pointer"
+            aria-label="Excluir lote"
+            title="Excluir lote"
+            @click="confirmDelete(row.original)"
+          />
         </div>
       </template>
     </UTable> 
@@ -163,6 +227,105 @@
       />
     </div>
   </UCard>
+
+  <div class="grid grid-cols-1 gap-4 mt-6 lg:grid-cols-2">
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="font-semibold text-gray-900">Movimentações Recentes</h2>
+          <NuxtLink
+            to="/movements"
+            class="text-sm font-medium text-primary-600 hover:underline"
+          >
+            Ver todas
+          </NuxtLink>
+        </div>
+      </template>
+
+      <div
+        v-if="recentMovements.length === 0"
+        class="py-6 text-center text-sm text-gray-500"
+      >
+        Nenhuma movimentação registrada.
+      </div>
+
+      <ul v-else class="divide-y divide-gray-100">
+        <li
+          v-for="movement in recentMovements"
+          :key="movement.id"
+          class="flex items-center justify-between gap-3 py-3"
+        >
+          <div class="min-w-0">
+            <p class="font-medium text-gray-900 truncate">
+              {{ movement.medicineName }}
+            </p>
+            <p class="text-sm text-gray-500">
+              {{ movement.batchNumber }} · {{ formatDateTime(movement.occurredAt) }}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <UBadge
+              :label="movement.type === 'Entry' ? 'Entrada' : 'Saída'"
+              :color="movement.type === 'Entry' ? 'success' : 'warning'"
+              variant="subtle"
+            />
+            <span
+              class="text-sm font-semibold"
+              :class="movement.type === 'Entry' ? 'text-green-600' : 'text-orange-600'"
+            >
+              {{ movement.type === 'Entry' ? '+' : '-' }}{{ movement.quantity }}
+            </span>
+          </div>
+        </li>
+      </ul>
+    </UCard>
+
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="font-semibold text-gray-900">Alertas de Validade</h2>
+          <NuxtLink
+            to="/alerts"
+            class="text-sm font-medium text-primary-600 hover:underline"
+          >
+            Ver todos
+          </NuxtLink>
+        </div>
+      </template>
+
+      <div
+        v-if="dashboardAlerts.length === 0"
+        class="py-6 text-center text-sm text-gray-500"
+      >
+        Nenhum alerta pendente.
+      </div>
+
+      <ul v-else class="divide-y divide-gray-100">
+        <li
+          v-for="alert in dashboardAlerts"
+          :key="alert.id"
+          class="flex items-center justify-between gap-3 py-3"
+        >
+          <div class="min-w-0">
+            <p class="font-medium text-gray-900 truncate">
+              {{ alert.medicineName }}
+            </p>
+            <p class="text-sm text-gray-500">
+              Lote {{ alert.lotNumber }} · {{ alert.quantity }} un.
+            </p>
+          </div>
+
+          <UBadge
+            :label="alert.daysLabel"
+            :color="alert.daysColor"
+            variant="subtle"
+            class="flex-shrink-0"
+          />
+        </li>
+      </ul>
+    </UCard>
+  </div>
 
   <UModal v-if="showModal" v-model:open="showModal" :title="editingBatch ? 'Editar Lote' : 'Novo Lote'">
     <template #body>
@@ -289,6 +452,27 @@ interface BatchRow {
   expirationDate: string
 }
 
+type DashboardBadgeColor = 'error' | 'warning' | 'success' | 'neutral'
+
+interface DashboardMovement {
+  id: string
+  medicineName: string
+  batchNumber: string
+  type: 'Entry' | 'Exit'
+  quantity: number
+  occurredAt: string
+}
+
+interface DashboardAlert {
+  id: string
+  medicineName: string
+  lotNumber: string
+  quantity: number
+  days: number | null
+  daysLabel: string
+  daysColor: DashboardBadgeColor
+}
+
 const columns: ComputedRef<TableColumn<BatchRow>[]> = computed(() => {
   const fields: any[] = [
     { accessorKey: 'medicineName', header: 'Medicamento', enableSorting: true },
@@ -333,8 +517,11 @@ const { isAdmin } = auth
 
 const {
   loading,
+  error: stockError,
   medicines,
   batches,
+  movements,
+  alerts,
   healthUnits,
   loadAll,
   createBatch,
@@ -394,7 +581,11 @@ const filteredBatches = computed(() => {
     result = result.filter(b => b.medicineId === filters.value.medicalId)
   }
 
-  if (filters.value.status !== 'todos') {
+  if (filters.value.status === 'low_stock_group') {
+    result = result.filter(
+      b => b.status === 'low_stock' || b.status === 'critical'
+    )
+  } else if (filters.value.status !== 'todos') {
     result = result.filter(b => b.status === filters.value.status)
   }
 
@@ -426,6 +617,54 @@ const expiringCount = computed(() =>
 const lowStockCount = computed(() => 
   batches.value.filter(b => b.status === 'low_stock' || b.status === 'critical').length
 )
+
+const recentMovements = computed<DashboardMovement[]>(() => {
+  return [...movements.value]
+    .sort(
+      (a, b) =>
+        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime()
+    )
+    .slice(0, 5)
+    .map(movement => {
+      const enriched = getBatchWithMedicine(movement.batchId)
+      const medicine = medicines.value.find(
+        item => item.id === movement.medicineId
+      )
+
+      return {
+        id: movement.id,
+        medicineName:
+          enriched?.medicineName || medicine?.name || 'Desconhecido',
+        batchNumber: enriched?.batchNumber || movement.batchId,
+        type: movement.type,
+        quantity: movement.quantity,
+        occurredAt: movement.occurredAt
+      }
+    })
+})
+
+const dashboardAlerts = computed<DashboardAlert[]>(() => {
+  return alerts.value
+    .filter(alert => !alert.resolved)
+    .map(alert => {
+      const batch = batches.value.find(item => item.id === alert.batchId)
+      const enriched = batch ? getBatchWithMedicine(batch.id) : null
+      const days = getDaysUntilExpiry(alert.expiryDate || alert.alertDate)
+
+      return {
+        id: alert.id,
+        medicineName:
+          alert.medicineName || enriched?.medicineName || 'Desconhecido',
+        lotNumber: alert.lotNumber || batch?.batchNumber || '—',
+        quantity: alert.quantity ?? batch?.quantity ?? 0,
+        days,
+        daysLabel: daysLabel(days),
+        daysColor: daysColor(days)
+      }
+    })
+    .sort((a, b) => (a.days ?? 9999) - (b.days ?? 9999))
+    .slice(0, 5)
+})
 
 function getStatusLabel(status?: string) {
   const labels: Record<string, string> = {
@@ -462,6 +701,44 @@ function formatDate(date: string) {
   })
 }
 
+function formatDateTime(value: string) {
+  const date = new Date(value.includes('T') ? value : `${value}T12:00:00`)
+
+  if (Number.isNaN(date.getTime())) return '—'
+
+  return date.toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+function getDaysUntilExpiry(value?: string): number | null {
+  if (!value) return null
+
+  const target = new Date(value.includes('T') ? value : `${value}T12:00:00`)
+  if (Number.isNaN(target.getTime())) return null
+
+  const today = new Date()
+  return Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+}
+
+function daysLabel(days: number | null) {
+  if (days === null) return '—'
+  if (days < 0) return 'Vencido'
+  if (days === 0) return 'Vence hoje'
+  return `${days} ${days === 1 ? 'dia' : 'dias'}`
+}
+
+function daysColor(days: number | null): DashboardBadgeColor {
+  if (days === null) return 'neutral'
+  if (days <= 7) return 'error'
+  if (days <= 30) return 'warning'
+  return 'success'
+}
+
 async function loadStock() {
   try {
     await loadAll()
@@ -492,6 +769,11 @@ function resetFilters() {
     medicalId: '',
     status: 'todos'
   }
+  pagination.value.page = 1
+}
+
+function applyStatusFilter(status: string) {
+  filters.value.status = status
   pagination.value.page = 1
 }
 
