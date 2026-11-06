@@ -51,9 +51,8 @@
       class="mb-4"
     />
 
-    <div v-if="loading" class="text-center py-12">
-      <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
-      <p class="text-gray-500">Carregando medicamentos...</p>
+    <div v-if="loading" class="py-2">
+      <TableSkeleton :rows="6" :columns="isAdmin ? 5 : 4" />
     </div>
 
     <div v-else-if="filteredMedicines.length === 0" class="text-center py-12">
@@ -173,7 +172,7 @@
           </UFormField>
         </div>
 
-        <div class="flex justify-end gap-3 w-full">
+        <div class="flex flex-col-reverse gap-3 w-full sm:flex-row sm:justify-end">
           <UButton
             color="neutral"
             variant="ghost"
@@ -209,7 +208,7 @@
         será permanentemente removido.
       </p>
 
-      <div class="flex justify-end gap-3">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <UButton
           color="neutral"
           variant="ghost"

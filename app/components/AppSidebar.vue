@@ -6,13 +6,13 @@
     >
       <div class="flex items-center justify-between px-4 py-3">
         <!-- Logo -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 min-w-0">
           <div
-            class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center"
+            class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center flex-shrink-0"
           >
             <UIcon name="i-heroicons-beaker" class="w-5 h-5 text-white" />
           </div>
-          <span class="font-bold text-gray-900">Gestor de Medicamentos</span>
+          <span class="font-bold text-gray-900 truncate">Gestor de Medicamentos</span>
         </div>
 
         <!-- Menu Toggle -->
@@ -208,7 +208,7 @@
               size="sm"
               icon="i-heroicons-arrow-left-on-rectangle"
               class="cursor-pointer"
-              @click="handleLogout"
+              @click="requestLogout"
             >
               Sair
             </UButton>
@@ -226,12 +226,47 @@
     <main class="lg:hidden min-h-[calc(100vh-60px)]">
       <slot />
     </main>
+
+    <UModal
+      v-if="showLogoutModal"
+      v-model:open="showLogoutModal"
+      :prevent-close="true"
+      title="Sair da conta?"
+    >
+      <template #body>
+        <p class="text-gray-600">
+          Você precisará entrar novamente para acessar o sistema.
+        </p>
+
+        <div class="flex flex-col-reverse gap-3 mt-6 sm:flex-row sm:justify-end">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            class="cursor-pointer w-full sm:w-auto"
+            :disabled="loggingOut"
+            @click="showLogoutModal = false"
+          >
+            Cancelar
+          </UButton>
+          <UButton
+            color="error"
+            class="cursor-pointer w-full sm:w-auto"
+            :loading="loggingOut"
+            @click="handleLogout"
+          >
+            Sair
+          </UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
 const auth = useAuth();
 const isMobileMenuOpen = ref(false);
+const showLogoutModal = ref(false);
+const loggingOut = ref(false);
 
 const currentPath = computed(() => useRoute().path);
 
@@ -275,8 +310,19 @@ const menuItems = [
 ];
 
 async function handleLogout() {
-  await auth.logout();
-  navigateTo("/login");
+  loggingOut.value = true;
+
+  try {
+    await auth.logout();
+    showLogoutModal.value = false;
+    await navigateTo("/login");
+  } finally {
+    loggingOut.value = false;
+  }
+}
+
+function requestLogout() {
+  showLogoutModal.value = true;
 }
 
 // Menu dropdown do usuário
@@ -290,7 +336,7 @@ const userMenuItems = [
     label: "Sair",
     icon: "i-heroicons-arrow-left-on-rectangle",
     class: "text-red-600",
-    click: handleLogout,
+    click: requestLogout,
   },
 ];
 </script>

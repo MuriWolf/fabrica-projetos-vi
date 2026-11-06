@@ -40,9 +40,25 @@
     class="mb-4"
   />
 
-  <div v-if="loading" class="text-center py-12">
-    <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
-    <p class="text-gray-500">Carregando unidades de saúde...</p>
+  <div
+    v-if="loading"
+    class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+    aria-hidden="true"
+  >
+    <UCard v-for="item in 6" :key="item">
+      <div class="flex items-start gap-3">
+        <USkeleton class="w-10 h-10 rounded-lg flex-shrink-0" />
+        <div class="flex-1 space-y-2">
+          <USkeleton class="h-5 w-3/4" />
+          <USkeleton class="h-4 w-1/2" />
+        </div>
+      </div>
+
+      <div class="mt-4 space-y-2">
+        <USkeleton class="h-4 w-full" />
+        <USkeleton class="h-4 w-2/3" />
+      </div>
+    </UCard>
   </div>
 
   <div v-else-if="filteredUnits.length === 0" class="text-center py-12">

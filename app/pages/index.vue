@@ -151,9 +151,8 @@
       class="mb-4"
     />
 
-    <div v-if="stock.loading.value" class="text-center py-12">
-      <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
-      <p class="text-gray-500">Carregando estoque...</p>
+    <div v-if="stock.loading.value" class="py-2">
+      <TableSkeleton :rows="6" :columns="isAdmin ? 6 : 5" />
     </div>
 
     <div v-else-if="filteredBatches.length === 0" class="text-center py-12">
@@ -253,7 +252,7 @@
         <li
           v-for="movement in recentMovements"
           :key="movement.id"
-          class="flex items-center justify-between gap-3 py-3"
+          class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
         >
           <div class="min-w-0">
             <p class="font-medium text-gray-900 truncate">
@@ -305,7 +304,7 @@
         <li
           v-for="alert in dashboardAlerts"
           :key="alert.id"
-          class="flex items-center justify-between gap-3 py-3"
+          class="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
         >
           <div class="min-w-0">
             <p class="font-medium text-gray-900 truncate">
@@ -382,7 +381,7 @@
           />
         </UFormField>
 
-        <div class="flex justify-end gap-3 w-full">
+        <div class="flex flex-col-reverse gap-3 w-full sm:flex-row sm:justify-end">
           <UButton
             color="neutral"
             variant="ghost"
@@ -413,7 +412,7 @@
         Esta ação não pode ser desfeita. Todos os dados deste lote serão permanentemente removidos.
       </p>
 
-      <div class="flex justify-end gap-3">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <UButton
           color="neutral"
           variant="ghost"

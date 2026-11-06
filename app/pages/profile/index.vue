@@ -6,17 +6,17 @@
 
   <UCard>
     <template #header>
-      <div class="flex items-center gap-4">
-        <div class="w-20 h-20 rounded-full bg-primary-500 flex items-center justify-center">
+      <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+        <div class="w-20 h-20 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
           <span class="text-white font-bold text-2xl">
             {{ profile.name?.charAt(0) || 'U' }}
           </span>
         </div>
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900">
+        <div class="min-w-0">
+          <h2 class="text-xl font-semibold text-gray-900 break-words">
             {{ profile.name || 'Usuário' }}
           </h2>
-          <p class="text-gray-500">{{ profile.email }}</p>
+          <p class="text-gray-500 break-words">{{ profile.email }}</p>
           <p class="text-sm text-gray-400">
             {{ formatCpf(profile.cpf) || 'CPF não informado' }}
           </p>
@@ -24,9 +24,15 @@
       </div>
     </template>
 
-    <div v-if="loading" class="text-center py-6">
-      <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
-      <p class="text-gray-500">Carregando...</p>
+    <div v-if="loading" class="space-y-4" aria-hidden="true">
+      <USkeleton class="h-12 w-full rounded-lg" />
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div v-for="field in 6" :key="field" class="space-y-2">
+          <USkeleton class="h-4 w-24" />
+          <USkeleton class="h-10 w-full rounded-md" />
+        </div>
+      </div>
     </div>
 
     <div v-else class="space-y-4">
@@ -132,12 +138,12 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-end gap-3">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <UButton
           color="neutral"
           variant="ghost"
           :disabled="loading"
-          class="cursor-pointer"
+          class="cursor-pointer w-full sm:w-auto"
           @click="handleCancel"
         >
           Cancelar
@@ -145,7 +151,7 @@
         <UButton
           color="primary"
           :loading="loading"
-          class="cursor-pointer"
+          class="cursor-pointer w-full sm:w-auto"
           @click="handleSave"
         >
           Salvar
@@ -172,7 +178,7 @@
           color="error"
           variant="soft"
           icon="i-lucide-trash-2"
-          class="cursor-pointer"
+          class="cursor-pointer w-full sm:w-auto"
           @click="showDeleteModal = true"
         >
           Excluir minha conta
@@ -193,11 +199,11 @@
           </p>
         </div>
 
-        <div class="flex justify-end gap-3">
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <UButton
             color="neutral"
             variant="ghost"
-            class="cursor-pointer"
+            class="cursor-pointer w-full sm:w-auto"
             @click="showDeleteModal = false"
           >
             Cancelar
@@ -205,7 +211,7 @@
           <UButton
             color="error"
             :loading="loading"
-            class="cursor-pointer"
+            class="cursor-pointer w-full sm:w-auto"
             @click="confirmDelete"
           >
             Excluir

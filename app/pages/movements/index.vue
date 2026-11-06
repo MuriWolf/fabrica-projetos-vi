@@ -101,9 +101,8 @@
       class="mb-4"
     />
 
-    <div v-if="loading" class="text-center py-12">
-      <UIcon name="i-lucide-loader" class="w-8 h-8 animate-spin mx-auto mb-3" />
-      <p class="text-gray-500">Carregando movimentações...</p>
+    <div v-if="loading" class="py-2">
+      <TableSkeleton :rows="6" :columns="4" />
     </div>
 
     <div v-else-if="filteredRows.length === 0" class="text-center py-12">
@@ -237,7 +236,7 @@
           description="A saída não pode deixar o lote com quantidade negativa."
         />
 
-        <div class="flex justify-end gap-3 w-full">
+        <div class="flex flex-col-reverse gap-3 w-full sm:flex-row sm:justify-end">
           <UButton
             color="neutral"
             variant="ghost"
