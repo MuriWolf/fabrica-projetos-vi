@@ -12,6 +12,56 @@ npm run dev
 
 A aplicação roda em `http://localhost:3000`.
 
+## Docker
+
+O `Dockerfile` usa build multi-stage com `node:24-alpine`: o estágio de build
+executa `npm ci` e `npm run build`, e a imagem final contém `.output` e `.env`,
+rodando com o usuário `node` na porta `3000`.
+
+O `.env` é copiado para a imagem e carregado no start pelo Node
+(`--env-file=.env`). Se o arquivo não existir, o build cria um `.env` vazio e
+os valores padrão do `nuxt.config.ts` são usados. Como o arquivo fica
+armazenado na imagem, evite incluir segredos nele.
+
+```bash
+cp .env.example .env   # opcional: define os valores embutidos
+docker build -t fabrica-projetos-vi .
+docker run --rm -p 3000:3000 fabrica-projetos-vi
+```
+
+A aplicação fica disponível em `http://localhost:3000`.
+
+Como o `.env` faz parte da imagem, alterações no arquivo exigem um novo build.
+Ainda assim, variáveis passadas em tempo de execução têm precedência e podem
+sobrescrever os valores embutidos sem rebuild:
+
+```bash
+docker run --rm -p 3000:3000 \
+  -e NUXT_PUBLIC_API_BASE_URL=http://localhost:5080 \
+  -e NUXT_PUBLIC_USE_MOCKS=false \
+  fabrica-projetos-vi
+```
+
+Também é possível usar `--env-file` com outro arquivo de variáveis:
+
+```bash
+docker run --rm -p 3000:3000 --env-file .env fabrica-projetos-vi
+```
+
+Para apontar para um backend em execução na máquina host, lembre-se de que
+`localhost` dentro do container é o próprio container. Use
+`host.docker.internal` (no Linux, adicione
+`--add-host=host.docker.internal:host-gateway`) ou o nome do serviço em uma rede
+Docker:
+
+```bash
+docker run --rm -p 3000:3000 \
+  --add-host=host.docker.internal:host-gateway \
+  -e NUXT_PUBLIC_API_BASE_URL=http://host.docker.internal:5080 \
+  -e NUXT_PUBLIC_USE_MOCKS=false \
+  fabrica-projetos-vi
+```
+
 ## Configuração
 
 | Variável | Padrão | Descrição |
