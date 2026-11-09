@@ -62,6 +62,22 @@ docker run --rm -p 3000:3000 \
   fabrica-projetos-vi
 ```
 
+### Stack completo com o backend
+
+Para subir front-end, API e PostgreSQL juntos, use o compose do repositório
+backend. Ele constrói este front-end a partir do diretório irmão:
+
+```bash
+cd ../FabricaProjetosAgeisVI
+cp .env.example .env        # preencha as senhas/chaves
+docker compose up --build
+```
+
+Acesse `http://localhost:3000`. O compose define `NUXT_PUBLIC_USE_MOCKS=false`
+e `NUXT_PUBLIC_API_BASE_URL=http://localhost:5080` em runtime, sobrescrevendo o
+`.env` embutido na imagem. Se a porta `3000` estiver ocupada, use
+`FRONTEND_PORT=3001` no comando do compose.
+
 ## Configuração
 
 | Variável | Padrão | Descrição |
