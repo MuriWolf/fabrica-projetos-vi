@@ -1,0 +1,12 @@
+.git
+.gitignore
+.nuxt
+.output
+.data
+node_modules
+dist
+Dockerfile
+.dockerignore
+.env
+.env.*
+*.log
