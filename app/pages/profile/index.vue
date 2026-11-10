@@ -9,14 +9,13 @@
       <div class="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
         <div class="w-20 h-20 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0">
           <span class="text-white font-bold text-2xl">
-            {{ profile.name?.charAt(0) || 'U' }}
+            {{ profile.email?.charAt(0)?.toUpperCase() || 'U' }}
           </span>
         </div>
         <div class="min-w-0">
           <h2 class="text-xl font-semibold text-gray-900 break-words">
-            {{ profile.name || 'Usuário' }}
+            {{ profile.email || 'Usuário' }}
           </h2>
-          <p class="text-gray-500 break-words">{{ profile.email }}</p>
           <p class="text-sm text-gray-400">
             {{ formatCpf(profile.cpf) || 'CPF não informado' }}
           </p>
@@ -28,7 +27,7 @@
       <USkeleton class="h-12 w-full rounded-lg" />
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div v-for="field in 6" :key="field" class="space-y-2">
+        <div v-for="field in 4" :key="field" class="space-y-2">
           <USkeleton class="h-4 w-24" />
           <USkeleton class="h-10 w-full rounded-md" />
         </div>
@@ -50,23 +49,10 @@
         variant="soft"
         icon="i-lucide-info"
         title="Modo API real"
-        description="Nome e telefone são mantidos apenas neste navegador. CPF e senha são salvos no servidor."
+        description="CPF e senha são salvos no servidor."
       />
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <UFormField
-          label="Nome"
-          class="w-full"
-          :description="!isMockMode ? 'Não armazenado pelo backend' : undefined"
-        >
-          <UInput
-            v-model="profile.name"
-            placeholder="Seu nome completo"
-            class="w-full"
-            :disabled="!isMockMode"
-          />
-        </UFormField>
-
         <UFormField label="E-mail" class="w-full">
           <UInput v-model="profile.email" disabled class="w-full" />
         </UFormField>
@@ -116,19 +102,6 @@
               />
             </template>
           </UInput>
-        </UFormField>
-
-        <UFormField
-          label="Telefone"
-          class="w-full"
-          :description="!isMockMode ? 'Não armazenado pelo backend' : undefined"
-        >
-          <UInput
-            v-model="profile.phone"
-            placeholder="(XX) XXXXX-XXXX"
-            class="w-full"
-            :disabled="!isMockMode"
-          />
         </UFormField>
 
         <UFormField label="Função" class="w-full">
@@ -314,8 +287,6 @@ async function handleSave() {
   try {
     await saveProfile(
       {
-        name: profile.value.name,
-        phone: profile.value.phone,
         cpf: profile.value.cpf,
         role: profile.value.role
       },
@@ -327,9 +298,7 @@ async function handleSave() {
 
     toast.add({
       title: 'Sucesso!',
-      description: isMockMode
-        ? 'Perfil salvo com sucesso.'
-        : 'CPF e senha salvos. Nome e telefone continuam apenas neste navegador.',
+      description: 'Perfil salvo com sucesso.',
       icon: 'i-lucide-check',
       color: 'primary'
     })

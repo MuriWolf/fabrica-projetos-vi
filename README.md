@@ -127,9 +127,9 @@ usuário automaticamente.
 
 ### Perfil no modo real
 
-O backend armazena apenas e-mail, CPF e senha. Nome e telefone permanecem locais
-no navegador, portanto esses campos ficam desabilitados quando
-`NUXT_PUBLIC_USE_MOCKS=false`.
+O backend armazena apenas e-mail, CPF e senha. Nome e telefone não fazem parte do
+modelo de usuário do frontend. O papel (`role`) permanece local no navegador,
+pois a API ainda não possui esse campo.
 
 Salvar no modo real exige a senha da conta porque `PUT /api/users/{id}` requer
 `email`, `password` e `cpf`. O campo de senha aceita a senha atual (para mantê-la)

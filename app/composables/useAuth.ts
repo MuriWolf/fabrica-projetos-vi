@@ -4,8 +4,6 @@ import { onlyDigits } from '~/utils/cpf'
 export interface AuthUser {
   id: string
   email: string
-  name: string
-  phone: string
   cpf: string
   role: string
 }
@@ -14,7 +12,6 @@ interface MockUser {
   id: string
   email: string
   password: string
-  name: string
   cpf: string
   role: string
 }
@@ -33,11 +30,16 @@ function generateMockToken(user: MockUser) {
   return `mock.${user.id}.${Date.now()}`
 }
 
-// Sessions created before CPF support may not have the field yet.
+// Rebuild the session user so stale cookie fields are dropped.
 function normalizeUser(value: AuthUser | null | undefined): AuthUser | null {
   if (!value) return null
 
-  return { ...value, cpf: onlyDigits(value.cpf) }
+  return {
+    id: value.id,
+    email: value.email,
+    cpf: onlyDigits(value.cpf),
+    role: value.role
+  }
 }
 
 function getErrorMessage(error: any, fallback = 'E-mail ou senha inválidos.'): string {
@@ -124,8 +126,6 @@ export function useAuth() {
         const mockUser: AuthUser = {
           id: found.id,
           email: found.email,
-          name: found.name,
-          phone: '',
           cpf: onlyDigits(found.cpf),
           role: found.role
         }
@@ -156,8 +156,6 @@ export function useAuth() {
       const authenticatedUser: AuthUser = {
         id: remoteUser?.id || '',
         email: remoteUser?.email || email,
-        name: email.split('@')[0] || email,
-        phone: '',
         // Accept both camelCase and PascalCase while the backend contract settles.
         cpf: onlyDigits(remoteUser?.cpf || remoteUser?.Cpf),
         // Roles do not exist in the backend yet.
@@ -195,7 +193,6 @@ export function useAuth() {
           id: generateMockUserId(),
           email: normalizedEmail,
           password,
-          name: normalizedEmail.split('@')[0] || 'Usuário',
           cpf: normalizedCpf,
           role: 'Regular'
         }
@@ -205,8 +202,6 @@ export function useAuth() {
         setSession(generateMockToken(newUser), {
           id: newUser.id,
           email: newUser.email,
-          name: newUser.name,
-          phone: '',
           cpf: newUser.cpf,
           role: newUser.role
         })

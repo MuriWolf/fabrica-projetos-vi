@@ -15,7 +15,9 @@ export function useApi() {
   const userState = useState<AuthUser | null>('auth_user', () => {
     const user = userCookie.value
 
-    return user ? { ...user, cpf: onlyDigits(user.cpf) } : null
+    return user
+      ? { id: user.id, email: user.email, cpf: onlyDigits(user.cpf), role: user.role }
+      : null
   })
 
   return $fetch.create({

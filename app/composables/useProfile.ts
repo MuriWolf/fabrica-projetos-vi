@@ -2,9 +2,7 @@ import { onlyDigits } from '~/utils/cpf'
 
 interface Profile {
   id?: string
-  name: string
   email: string
-  phone: string
   cpf: string
   role: string
 }
@@ -22,8 +20,8 @@ function delay(ms: number) {
 
 /**
  * Profile adapter. Uses the authenticated user as the source of truth.
- * The backend stores id, email, CPF and password; name, phone and role are
- * local-only until the API supports them.
+ * The backend stores id, email, CPF and password; role is local-only until the
+ * API supports it.
  */
 export function useProfile() {
   const config = useRuntimeConfig()
@@ -32,9 +30,7 @@ export function useProfile() {
   const auth = useAuth()
 
   const profile = useState<Profile>('profile_data', () => ({
-    name: '',
     email: '',
-    phone: '',
     cpf: '',
     role: ''
   }))
@@ -57,17 +53,13 @@ export function useProfile() {
 
         profile.value = {
           id: currentUser.id || undefined,
-          name: currentUser.name,
           email: currentUser.email,
-          phone: currentUser.phone || '(51) 99999-9999',
           cpf: onlyDigits(currentUser.cpf),
           role: currentUser.role
         }
 
         auth.updateUser({
-          name: profile.value.name,
           email: profile.value.email,
-          phone: profile.value.phone,
           cpf: profile.value.cpf,
           role: profile.value.role
         })
@@ -81,9 +73,7 @@ export function useProfile() {
 
       profile.value = {
         id: user.id,
-        name: currentUser.name || user.email.split('@')[0] || 'Usuário',
         email: user.email,
-        phone: currentUser.phone || '',
         // Older API responses do not include CPF; fall back to the session.
         cpf: onlyDigits(user.cpf || user.Cpf || currentUser.cpf),
         role: currentUser.role || 'Regular'
@@ -92,8 +82,6 @@ export function useProfile() {
       auth.updateUser({
         id: profile.value.id || '',
         email: profile.value.email,
-        name: profile.value.name,
-        phone: profile.value.phone,
         cpf: profile.value.cpf,
         role: profile.value.role
       })
@@ -117,9 +105,7 @@ export function useProfile() {
 
         // Keep the sidebar and the persisted session in sync with the profile.
         auth.updateUser({
-          name: profile.value.name,
           email: profile.value.email,
-          phone: profile.value.phone,
           cpf: profile.value.cpf,
           role: profile.value.role
         })
@@ -129,7 +115,7 @@ export function useProfile() {
       }
 
       // PUT /api/users/{id} requires email, password and CPF. The backend has no
-      // name, phone or role fields yet, so those stay local to the browser.
+      // role field yet, so it stays local to the browser.
       if (!password || password.length < 8) {
         throw new Error(
           'Informe uma senha com pelo menos 8 caracteres para salvar as alterações.'
@@ -160,8 +146,6 @@ export function useProfile() {
       auth.updateUser({
         id: profile.value.id || '',
         email: profile.value.email,
-        name: profile.value.name,
-        phone: profile.value.phone,
         cpf: profile.value.cpf,
         role: profile.value.role
       })
@@ -206,9 +190,7 @@ export function useProfile() {
 
     profile.value = {
       id: currentUser?.id || undefined,
-      name: currentUser?.name || '',
       email: currentUser?.email || '',
-      phone: currentUser?.phone || '',
       cpf: onlyDigits(currentUser?.cpf),
       role: currentUser?.role || 'Usuário'
     }

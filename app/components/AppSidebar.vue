@@ -71,15 +71,15 @@
                   class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center"
                 >
                   <span class="text-white font-semibold text-sm">
-                    {{ auth.user.value?.name?.charAt(0) || "U" }}
+                    {{ auth.user.value?.email?.charAt(0)?.toUpperCase() || "U" }}
                   </span>
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-medium text-gray-900 truncate">
-                    {{ auth.user.value?.name || "Usuário" }}
+                    {{ auth.user.value?.email || "Usuário" }}
                   </p>
                   <p class="text-sm text-gray-500 truncate">
-                    {{ auth.user.value?.email }}
+                    {{ auth.user.value?.role }}
                   </p>
                 </div>
               </div>
@@ -178,15 +178,15 @@
                 class="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center flex-shrink-0"
               >
                 <span class="text-white font-semibold text-sm">
-                  {{ auth.user.value?.name?.charAt(0) || "U" }}
+                  {{ auth.user.value?.email?.charAt(0)?.toUpperCase() || "U" }}
                 </span>
               </div>
               <div class="flex-1 min-w-0">
                 <p class="font-medium text-gray-900 text-sm truncate">
-                  {{ auth.user.value?.name || "Usuário" }}
+                  {{ auth.user.value?.email || "Usuário" }}
                 </p>
                 <p class="text-xs text-gray-500 truncate">
-                  {{ auth.user.value?.email }}
+                  {{ auth.user.value?.role }}
                 </p>
               </div>
 
