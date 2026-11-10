@@ -44,8 +44,6 @@ export interface StockMovement {
   medicineId: string
   type: 'Entry' | 'Exit'
   quantity: number
-  occurredAt: string
-  transferId?: string | null
 }
 
 export interface Stock {
@@ -104,8 +102,6 @@ interface ApiMovement {
   medicineId: string
   type: 'Entry' | 'Exit' | number | string
   quantity: number
-  occurredAt: string
-  transferId?: string | null
 }
 
 interface ApiAlert {
@@ -148,9 +144,18 @@ export function deriveBatchStatus(batch: Pick<Batch, 'quantity' | 'expirationDat
   return 'available'
 }
 
-function normalizeMovementType(type: ApiMovement['type']): 'Entry' | 'Exit' {
+// The UI only supports Entry/Exit; ignore other backend enum values.
+function normalizeMovementType(type: ApiMovement['type']): 'Entry' | 'Exit' | null {
+  if (type === 'Entry' || type === 0 || type === '0') return 'Entry'
   if (type === 'Exit' || type === 1 || type === '1') return 'Exit'
-  return 'Entry'
+  return null
+}
+
+function toMovements(list: ApiMovement[]): StockMovement[] {
+  return list.flatMap(movement => {
+    const type = normalizeMovementType(movement.type)
+    return type ? [{ ...movement, type }] : []
+  })
 }
 
 function toMockBatch(raw: any): Batch {
@@ -202,13 +207,7 @@ export function useStock() {
     useMocks ? healthUnitsData.healthUnits.map(unit => ({ ...unit })) : []
   )
   const movements = useState<StockMovement[]>('stock_movements', () =>
-    useMocks
-      ? (movementsData.movements as ApiMovement[]).map(movement => ({
-          ...movement,
-          type: normalizeMovementType(movement.type),
-          transferId: movement.transferId ?? null
-        }))
-      : []
+    useMocks ? toMovements(movementsData.movements as ApiMovement[]) : []
   )
   const stocks = useState<Stock[]>('stock_stocks', () => [])
   const alerts = useState<ExpirationAlert[]>('stock_alerts', () =>
@@ -302,11 +301,7 @@ export function useStock() {
         medicines.value = medicineList
         healthUnits.value = unitList
         stocks.value = stockList
-        movements.value = movementList.map(movement => ({
-          ...movement,
-          type: normalizeMovementType(movement.type),
-          transferId: movement.transferId ?? null
-        }))
+        movements.value = toMovements(movementList)
         alerts.value = alertList
         batches.value = batchList.map(batch => toApiBatch(batch, stockList))
       }
@@ -613,8 +608,7 @@ export function useStock() {
 
       const movement: StockMovement = {
         id: `mov-${Date.now()}`,
-        ...data,
-        transferId: data.transferId ?? null
+        ...data
       }
 
       movements.value.push(movement)
@@ -641,16 +635,13 @@ export function useStock() {
         medicineId: data.medicineId,
         // The reference backend still serializes the enum as a number.
         type: data.type === 'Exit' ? 1 : 0,
-        quantity: data.quantity,
-        occurredAt: data.occurredAt,
-        transferId: data.transferId ?? null
+        quantity: data.quantity
       }
     })
 
     const normalized: StockMovement = {
       ...movement,
-      type: normalizeMovementType(movement.type),
-      transferId: movement.transferId ?? null
+      type: normalizeMovementType(movement.type) ?? data.type
     }
 
     movements.value.push(normalized)

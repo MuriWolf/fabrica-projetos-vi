@@ -260,7 +260,7 @@
               {{ movement.medicineName }}
             </p>
             <p class="text-sm text-gray-500">
-              {{ movement.batchNumber }} · {{ formatDateTime(movement.occurredAt) }}
+              {{ movement.batchNumber }}
             </p>
           </div>
 
@@ -460,7 +460,6 @@ interface DashboardMovement {
   batchNumber: string
   type: 'Entry' | 'Exit'
   quantity: number
-  occurredAt: string
 }
 
 interface DashboardAlert {
@@ -620,11 +619,8 @@ const lowStockCount = computed(() =>
 
 const recentMovements = computed<DashboardMovement[]>(() => {
   return [...movements.value]
-    .sort(
-      (a, b) =>
-        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime()
-    )
-    .slice(0, 5)
+    .slice(-5)
+    .reverse()
     .map(movement => {
       const enriched = getBatchWithMedicine(movement.batchId)
       const medicine = medicines.value.find(
@@ -637,8 +633,7 @@ const recentMovements = computed<DashboardMovement[]>(() => {
           enriched?.medicineName || medicine?.name || 'Desconhecido',
         batchNumber: enriched?.batchNumber || movement.batchId,
         type: movement.type,
-        quantity: movement.quantity,
-        occurredAt: movement.occurredAt
+        quantity: movement.quantity
       }
     })
 })
@@ -698,20 +693,6 @@ function formatDate(date: string) {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
-  })
-}
-
-function formatDateTime(value: string) {
-  const date = new Date(value.includes('T') ? value : `${value}T12:00:00`)
-
-  if (Number.isNaN(date.getTime())) return '—'
-
-  return date.toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
   })
 }
 

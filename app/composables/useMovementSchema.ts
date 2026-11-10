@@ -10,9 +10,7 @@ export const movementSchema = z.object({
   quantity: z.coerce
     .number()
     .int('Quantidade deve ser um número inteiro')
-    .positive('Quantidade deve ser maior que 0'),
-
-  occurredAt: z.string().min(1, 'Data da movimentação é obrigatória')
+    .positive('Quantidade deve ser maior que 0')
 })
 
 export type MovementFormData = z.infer<typeof movementSchema>

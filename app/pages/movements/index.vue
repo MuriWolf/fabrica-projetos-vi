@@ -102,7 +102,7 @@
     />
 
     <div v-if="loading" class="py-2">
-      <TableSkeleton :rows="6" :columns="4" />
+      <TableSkeleton :rows="6" :columns="3" />
     </div>
 
     <div v-else-if="filteredRows.length === 0" class="text-center py-12">
@@ -142,10 +142,6 @@
         >
           {{ row.original.type === 'Entry' ? '+' : '-' }}{{ row.original.quantity }}
         </span>
-      </template>
-
-      <template #occurredAt-cell="{ row }">
-        {{ formatDateTime(row.original.occurredAt) }}
       </template>
     </UTable>
 
@@ -219,15 +215,6 @@
           </UFormField>
         </div>
 
-        <UFormField name="occurredAt" label="Data da Movimentação" required>
-          <UInput
-            v-model="formData.occurredAt"
-            type="date"
-            class="w-full"
-            :disabled="saving"
-          />
-        </UFormField>
-
         <UAlert
           v-if="formData.type === 'Exit' && selectedBatch && formData.quantity > selectedBatch.quantity"
           color="warning"
@@ -280,7 +267,6 @@ interface MovementRow {
   batchNumber: string
   type: 'Entry' | 'Exit'
   quantity: number
-  occurredAt: string
 }
 
 const toast = useToast()
@@ -310,8 +296,7 @@ const filterTypeOptions = [
 const columns: TableColumn<MovementRow>[] = [
   { accessorKey: 'medicineName', header: 'Medicamento / Lote', enableSorting: true },
   { accessorKey: 'type', header: 'Tipo', enableSorting: true },
-  { accessorKey: 'quantity', header: 'Quantidade', enableSorting: true },
-  { accessorKey: 'occurredAt', header: 'Data', enableSorting: true }
+  { accessorKey: 'quantity', header: 'Quantidade', enableSorting: true }
 ]
 
 const filters = ref({
@@ -325,8 +310,7 @@ const saving = ref(false)
 const formData = reactive<MovementFormData>({
   batchId: '',
   type: 'Entry',
-  quantity: 1,
-  occurredAt: todayInput()
+  quantity: 1
 })
 
 const selectedBatch = computed(
@@ -349,25 +333,19 @@ const isAnyFilterApplied = computed(
 )
 
 const rows = computed<MovementRow[]>(() => {
-  return movements.value
-    .map(movement => {
-      const enriched = getBatchWithMedicine(movement.batchId)
-      const medicine =
-        medicines.value.find(item => item.id === movement.medicineId) || null
+  return movements.value.map(movement => {
+    const enriched = getBatchWithMedicine(movement.batchId)
+    const medicine =
+      medicines.value.find(item => item.id === movement.medicineId) || null
 
-      return {
-        id: movement.id,
-        medicineName: enriched?.medicineName || medicine?.name || 'Desconhecido',
-        batchNumber: enriched?.batchNumber || movement.batchId,
-        type: movement.type,
-        quantity: movement.quantity,
-        occurredAt: movement.occurredAt
-      }
-    })
-    .sort(
-      (a, b) =>
-        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime()
-    )
+    return {
+      id: movement.id,
+      medicineName: enriched?.medicineName || medicine?.name || 'Desconhecido',
+      batchNumber: enriched?.batchNumber || movement.batchId,
+      type: movement.type,
+      quantity: movement.quantity
+    }
+  })
 })
 
 const filteredRows = computed(() => {
@@ -408,25 +386,6 @@ const exitTotal = computed(() =>
     .reduce((sum, movement) => sum + movement.quantity, 0)
 )
 
-function todayInput(): string {
-  const now = new Date()
-  const offset = now.getTimezoneOffset()
-  return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 10)
-}
-
-function formatDateTime(value: string): string {
-  const date = new Date(value.includes('T') ? value : `${value}T12:00:00`)
-  if (Number.isNaN(date.getTime())) return '—'
-
-  return date.toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
 function resetFilters() {
   filters.value = {
     search: '',
@@ -438,7 +397,6 @@ function openCreateModal() {
   formData.batchId = ''
   formData.type = 'Entry'
   formData.quantity = 1
-  formData.occurredAt = todayInput()
   showFormModal.value = true
 }
 
@@ -500,9 +458,7 @@ async function handleSave(event: { data: MovementFormData }) {
       batchId: batch.id,
       medicineId: batch.medicineId,
       type: event.data.type,
-      quantity: event.data.quantity,
-      occurredAt: new Date(`${event.data.occurredAt}T12:00:00`).toISOString(),
-      transferId: null
+      quantity: event.data.quantity
     }
 
     await createMovement(movement)

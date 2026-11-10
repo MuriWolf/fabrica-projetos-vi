@@ -6,8 +6,7 @@
       "batchId": "batch-001",
       "medicineId": "1",
       "type": "Entry",
-      "quantity": 1000,
-      "occurredAt": "2026-02-01T10:00:00Z"
+      "quantity": 1000
     },
     {
       "id": "mov-002",
@@ -15,8 +14,7 @@
       "batchId": "batch-001",
       "medicineId": "1",
       "type": "Exit",
-      "quantity": 150,
-      "occurredAt": "2026-09-20T14:30:00Z"
+      "quantity": 150
     },
     {
       "id": "mov-003",
@@ -24,8 +22,7 @@
       "batchId": "batch-003",
       "medicineId": "3",
       "type": "Entry",
-      "quantity": 300,
-      "occurredAt": "2025-07-01T08:45:00Z"
+      "quantity": 300
     },
     {
       "id": "mov-004",
@@ -33,8 +30,7 @@
       "batchId": "batch-003",
       "medicineId": "3",
       "type": "Exit",
-      "quantity": 200,
-      "occurredAt": "2026-09-25T16:20:00Z"
+      "quantity": 200
     },
     {
       "id": "mov-005",
@@ -42,8 +38,7 @@
       "batchId": "batch-005",
       "medicineId": "5",
       "type": "Entry",
-      "quantity": 200,
-      "occurredAt": "2025-12-01T09:30:00Z"
+      "quantity": 200
     },
     {
       "id": "mov-006",
@@ -51,8 +46,7 @@
       "batchId": "batch-007",
       "medicineId": "7",
       "type": "Entry",
-      "quantity": 50,
-      "occurredAt": "2025-04-15T10:00:00Z"
+      "quantity": 50
     },
     {
       "id": "mov-007",
@@ -60,8 +54,7 @@
       "batchId": "batch-010",
       "medicineId": "4",
       "type": "Entry",
-      "quantity": 100,
-      "occurredAt": "2025-03-01T08:00:00Z"
+      "quantity": 100
     },
     {
       "id": "mov-008",
@@ -69,8 +62,7 @@
       "batchId": "batch-010",
       "medicineId": "4",
       "type": "Exit",
-      "quantity": 95,
-      "occurredAt": "2026-09-26T18:30:00Z"
+      "quantity": 95
     }
   ],
   "types": ["Entry", "Exit"]
